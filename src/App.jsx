@@ -214,9 +214,6 @@ export default function App() {
           </a>
           <ul className="enq-links">
             <li>
-              <a href={`tel:${profile.phone.replace(/\s/g, "")}`}>{profile.phone}</a>
-            </li>
-            <li>
               <Ext href={profile.linkedin}>LinkedIn</Ext>
             </li>
             <li>

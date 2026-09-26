@@ -7,7 +7,6 @@ export const profile = {
   role: "Software & AI Engineer",
   location: "Bangalore",
   email: "tripathikaustubh2281@gmail.com",
-  phone: "+91 84232 55001",
   github: "https://github.com/ktripathi2281",
   linkedin: "https://www.linkedin.com/in/kaustubh-tripathi",
   resume: "/resume.pdf",
