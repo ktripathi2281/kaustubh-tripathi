@@ -153,6 +153,11 @@ a:hover {
   outline-offset: 3px;
 }
 
+/* Sections receive focus after a jump from Contents; no ring around a whole section. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
 ::selection {
   background: var(--accent-soft);
   color: var(--ink);
@@ -269,12 +274,177 @@ a:hover .arrow {
   cursor: pointer;
 }
 
+.contents-toggle,
+.contents-close {
+  padding: 0.35rem 0;
+  border: 0;
+  background: none;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.contents-toggle {
+  display: none;
+}
+
 @media (max-width: 680px) {
-  .site-header nav {
+  .nav-inline {
     display: none;
   }
+  .contents-toggle {
+    display: inline-block;
+  }
+  .header-inner {
+    gap: 1.25rem;
+  }
   .theme-toggle {
-    border-left: 0;
+    padding-left: 1.25rem;
+    color: var(--muted);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Contents: the mobile table of contents                              */
+/* ------------------------------------------------------------------ */
+
+html.contents-open {
+  overflow: hidden;
+}
+
+.contents {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--paper);
+}
+
+.contents[hidden] {
+  display: none;
+}
+
+.contents-bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+  padding: 0 var(--gutter);
+  border-bottom: 1px solid var(--rule);
+}
+
+.contents-close:hover,
+.contents-toggle:hover {
+  color: var(--accent);
+}
+
+.contents-body {
+  padding: 2.25rem var(--gutter) 3rem;
+}
+
+.contents-kicker {
+  margin-bottom: 1.25rem;
+}
+
+.contents-list {
+  border-bottom: 1px solid var(--rule);
+}
+
+.contents-list > li {
+  padding: 1rem 0 1.1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.contents-list a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.contents-list > li > a {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.contents-index {
+  flex: none;
+  width: 2.5rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.contents-label {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(2.5rem, 12vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.contents-list > li > a:hover .contents-label,
+.contents-plates a:hover {
+  color: var(--accent);
+}
+
+.contents-plates {
+  margin: 0.85rem 0 0.2rem 3.5rem;
+}
+
+.contents-plates li + li {
+  margin-top: 0.35rem;
+}
+
+.contents-plates a {
+  display: flex;
+  align-items: baseline;
+  font-size: 1.05rem;
+  color: var(--ink-2);
+  transition: color 0.15s ease;
+}
+
+.contents-plate-no {
+  flex: none;
+  width: 2.25rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.contents-foot {
+  margin-top: 2rem;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 1.35rem;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .contents.is-open {
+    animation: contents-in 0.3s ease both;
+  }
+  .contents.is-open .contents-list > li,
+  .contents.is-open .contents-foot {
+    animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 4) * 60ms + 80ms);
+  }
+}
+
+@keyframes contents-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

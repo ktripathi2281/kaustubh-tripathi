@@ -81,7 +81,7 @@ export default function App() {
       <a href="#main" className="skip-link">
         Skip to content
       </a>
-      <Header />
+      <Header plates={projects} email={profile.email} />
 
       <main id="main">
         {/* Frontispiece */}
