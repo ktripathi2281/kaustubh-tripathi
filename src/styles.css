@@ -947,18 +947,24 @@ main {
   color: var(--accent);
 }
 
+/* The portrait stretches to the full height of the text beside it. */
 .statement-body {
   display: grid;
-  grid-template-columns: 10rem minmax(0, 38rem);
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: start;
+  grid-template-columns: 16rem minmax(0, 38rem);
+  gap: clamp(2rem, 4.5vw, 3.5rem);
+  align-items: stretch;
   margin-left: auto;
-  margin-right: clamp(0rem, 6vw, 6rem);
+  margin-right: clamp(0rem, 4vw, 4rem);
+}
+
+.portrait {
+  display: block;
+  min-height: 18rem;
 }
 
 .portrait img {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  height: 100%;
   object-fit: cover;
   object-position: 45% 40%;
   filter: grayscale(1) contrast(1.05);
@@ -974,21 +980,12 @@ main {
   margin-top: 1.15rem;
 }
 
-.prose p:first-child::first-letter {
-  float: left;
-  margin: 0.08em 0.1em 0 0;
-  font-family: var(--display);
-  font-size: 3.6em;
-  line-height: 0.8;
-  color: var(--accent);
-}
-
 @media (max-width: 900px) {
   .pull p {
     margin-left: 0.45em;
   }
   .statement-body {
-    grid-template-columns: 7.5rem minmax(0, 1fr);
+    grid-template-columns: 12rem minmax(0, 1fr);
     margin: 0;
   }
 }
@@ -997,8 +994,13 @@ main {
   .statement-body {
     grid-template-columns: minmax(0, 1fr);
   }
+  .portrait {
+    min-height: 0;
+  }
   .portrait img {
-    width: 8rem;
+    width: min(100%, 18rem);
+    height: auto;
+    aspect-ratio: 4 / 5;
   }
 }
 
