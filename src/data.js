@@ -165,13 +165,6 @@ export const certificates = {
 
 export const chronology = [
   {
-    year: "2026",
-    entries: [
-      { text: "Claude Certified Architect, Foundations, Anthropic", ref: "certificates" },
-      { text: "Claude Certified Developer, Foundations, Anthropic", ref: "certificates" },
-    ],
-  },
-  {
     year: "2025",
     entries: [
       {

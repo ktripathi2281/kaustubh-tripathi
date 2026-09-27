@@ -1215,16 +1215,6 @@ main {
   color: var(--ink);
 }
 
-.chron-ref {
-  margin-left: 0.25rem;
-  font-family: var(--mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--accent);
-  text-decoration-color: var(--accent-soft);
-}
 
 .chron-detail {
   margin-top: 0.5rem;

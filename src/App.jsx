@@ -225,17 +225,7 @@ export default function App() {
                 <ul className="chron-entries">
                   {c.entries.map((e) => (
                     <li key={e.text}>
-                      <p className="chron-text">
-                        {e.text}
-                        {e.ref && (
-                          <>
-                            {" "}
-                            <a className="chron-ref" href={`#${e.ref}`}>
-                              see § 3
-                            </a>
-                          </>
-                        )}
-                      </p>
+                      <p className="chron-text">{e.text}</p>
                       {e.detail && <p className="chron-detail">{e.detail}</p>}
                     </li>
                   ))}
