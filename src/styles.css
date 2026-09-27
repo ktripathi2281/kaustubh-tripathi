@@ -947,18 +947,30 @@ main {
   color: var(--accent);
 }
 
+/* The portrait runs exactly from the cap height of the first line of text to
+   the baseline of the last: the grid stretches it to the text block, and the
+   margins remove the half-leading above and below (measured for Newsreader
+   at line-height 1.65). */
 .statement-body {
   display: grid;
-  grid-template-columns: 10rem minmax(0, 38rem);
+  grid-template-columns: 14rem minmax(0, 38rem);
   gap: clamp(2rem, 5vw, 4rem);
-  align-items: start;
+  align-items: stretch;
   margin-left: auto;
   margin-right: clamp(0rem, 6vw, 6rem);
 }
 
+.portrait {
+  position: relative;
+  display: block;
+  margin: 0.365em 0 0.615em;
+}
+
 .portrait img {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  height: 100%;
   object-fit: cover;
   object-position: 45% 40%;
   filter: grayscale(1) contrast(1.05);
@@ -974,22 +986,42 @@ main {
   margin-top: 1.15rem;
 }
 
+/* Two-line drop cap: its cap height spans from the first line's cap height
+   to the second line's baseline. The first word is "I", followed by a space,
+   so no punctuation gets pulled into the initial. */
+.prose p:first-child::first-letter {
+  float: left;
+  margin: 0 0.12em 0 0;
+  font-family: var(--display);
+  font-size: 3.7em;
+  font-weight: 400;
+  line-height: 0.8;
+  color: var(--accent);
+}
+
 @media (max-width: 900px) {
   .pull p {
     margin-left: 0.45em;
   }
   .statement-body {
-    grid-template-columns: 7.5rem minmax(0, 1fr);
+    grid-template-columns: 11rem minmax(0, 1fr);
     margin: 0;
   }
 }
 
+/* Stacked on phones: nothing beside it to match, so a plain 4:5 print. */
 @media (max-width: 560px) {
   .statement-body {
     grid-template-columns: minmax(0, 1fr);
   }
+  .portrait {
+    margin: 0;
+  }
   .portrait img {
-    width: 8rem;
+    position: static;
+    width: 10rem;
+    height: auto;
+    aspect-ratio: 4 / 5;
   }
 }
 

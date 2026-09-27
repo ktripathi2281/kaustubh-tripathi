@@ -25,7 +25,7 @@ export const frontispiece = {
 export const statement = {
   pull: "The model is the least reliable part of the system. Everything I build around it is designed to hold.",
   body: [
-    "I’m a software engineer first. At Tata Consultancy Services I work on Java and Spring Boot services for a banking product, where the job is keeping legacy systems fast, correct and debuggable in production. Lately I’ve been bringing the same instincts to language models.",
+    "I am a software engineer first. At Tata Consultancy Services I work on Java and Spring Boot services for a banking product, where the job is keeping legacy systems fast, correct and debuggable in production. Lately I’ve been bringing the same instincts to language models.",
     "In practice that means typed, schema-validated outputs, guardrails that reject answers contradicting what a user has already confirmed, a deterministic fallback behind every model route, and a log entry for every decision an agent makes. The drawings on this page are made the same way: generated in code, but held inside rules.",
   ],
 };
