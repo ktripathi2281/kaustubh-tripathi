@@ -10,6 +10,7 @@ export const profile = {
   github: "https://github.com/ktripathi2281",
   linkedin: "https://www.linkedin.com/in/kaustubh-tripathi",
   resume: "/resume.pdf",
+  source: "https://github.com/ktripathi2281/kaustubh-tripathi",
   availability: "Open to software & AI engineering roles",
   lede: "I build dependable software, including language-model systems that hold their shape when the model doesn't.",
 };

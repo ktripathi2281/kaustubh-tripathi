@@ -274,7 +274,8 @@ export default function App() {
         <p className="mono">Colophon</p>
         <p>
           Set in Cormorant Garamond, Newsreader and IBM Plex Mono. Every drawing on this page is generated in code and
-          plotted live in your browser. There are no images of the art, only instructions for making it.
+          plotted live in your browser. There are no images of the art, only instructions for making it.{" "}
+          <Ext href={profile.source}>Read the instructions</Ext>
         </p>
         <p className="colophon-end">
           <span>
