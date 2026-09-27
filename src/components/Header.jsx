@@ -18,9 +18,13 @@ export default function Header({ plates = [], email }) {
   const [theme, setTheme] = useState(readTheme);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const openerRef = useRef(null);
   const closeRef = useRef(null);
   const returnFocus = useRef(true);
+  const leaveTimer = useRef(null);
+
+  useEffect(() => () => clearTimeout(leaveTimer.current), []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -62,18 +66,52 @@ export default function Header({ plates = [], email }) {
     setTheme(next);
   }
 
-  // Lift the scroll lock, jump to the section, and hand it keyboard focus.
+  function openContents() {
+    clearTimeout(leaveTimer.current);
+    returnFocus.current = true;
+    if (open) {
+      // Reopened while fading out: the open-state effect never unmounted,
+      // so restore the scroll lock and focus it would have set.
+      document.documentElement.classList.add("contents-open");
+      closeRef.current?.focus();
+    }
+    setLeaving(false);
+    setOpen(true);
+  }
+
+  // Fade the contents page away, or close it at once if motion is reduced.
+  function lift() {
+    clearTimeout(leaveTimer.current);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setOpen(false);
+      return;
+    }
+    setLeaving(true);
+    leaveTimer.current = setTimeout(() => {
+      setOpen(false);
+      setLeaving(false);
+    }, 260);
+  }
+
+  // Jump to the section while the contents page still covers the screen,
+  // then lift it to reveal the page already in place. The jump is instant on
+  // purpose: a long smooth scroll started as the scroll lock lifts can be
+  // dropped by mobile browsers, which left the page where it was.
   function go(e, id) {
     e.preventDefault();
     const target = document.getElementById(id);
-    document.documentElement.classList.remove("contents-open");
+    const root = document.documentElement;
+    root.classList.remove("contents-open");
     returnFocus.current = false;
-    setOpen(false);
-    if (!target) return;
-    target.scrollIntoView({ block: "start" });
-    target.setAttribute("tabindex", "-1");
-    target.focus({ preventScroll: true });
-    history.replaceState(null, "", `#${id}`);
+    if (target) {
+      root.style.scrollBehavior = "auto";
+      target.scrollIntoView({ block: "start" });
+      root.style.scrollBehavior = "";
+      target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: true });
+      history.replaceState(null, "", `#${id}`);
+    }
+    lift();
   }
 
   const nextLabel = theme === "dark" ? "Day" : "Night";
@@ -100,7 +138,7 @@ export default function Header({ plates = [], email }) {
             className="contents-toggle"
             aria-expanded={open}
             aria-controls="contents"
-            onClick={() => setOpen(true)}
+            onClick={openContents}
           >
             Contents
           </button>
@@ -117,7 +155,7 @@ export default function Header({ plates = [], email }) {
 
       <div
         id="contents"
-        className={`contents${open ? " is-open" : ""}`}
+        className={`contents${open ? " is-open" : ""}${leaving ? " is-leaving" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-label="Contents"
@@ -127,7 +165,7 @@ export default function Header({ plates = [], email }) {
           <span className="monogram" aria-hidden="true">
             K<span>·</span>T
           </span>
-          <button type="button" ref={closeRef} className="contents-close" onClick={() => setOpen(false)}>
+          <button type="button" ref={closeRef} className="contents-close" onClick={lift}>
             Close
           </button>
         </div>

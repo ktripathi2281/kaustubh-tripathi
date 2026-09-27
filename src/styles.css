@@ -428,6 +428,11 @@ html.contents-open {
   overflow-wrap: anywhere;
 }
 
+/* Lifting away: the page underneath is already in place, and taps pass through. */
+.contents.is-leaving {
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .contents.is-open {
     animation: contents-in 0.3s ease both;
@@ -437,6 +442,9 @@ html.contents-open {
     animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
     animation-delay: calc(var(--i, 4) * 60ms + 80ms);
   }
+  .contents.is-open.is-leaving {
+    animation: contents-out 0.26s ease both;
+  }
 }
 
 @keyframes contents-in {
@@ -445,6 +453,15 @@ html.contents-open {
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes contents-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
