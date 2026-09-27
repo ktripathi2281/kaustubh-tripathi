@@ -291,7 +291,7 @@ a:hover .arrow {
   display: none;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 800px) {
   .nav-inline {
     display: none;
   }
@@ -1027,6 +1027,161 @@ main {
 }
 
 /* ------------------------------------------------------------------ */
+/* Certificates                                                        */
+/* ------------------------------------------------------------------ */
+
+.section-lead {
+  max-width: 36ch;
+  margin: calc(-1 * clamp(1.5rem, 4vw, 3rem)) 0 clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.certificates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.certificate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3.5vw, 3rem) clamp(2rem, 3.5vw, 2.5rem);
+  text-align: center;
+  background: var(--mat);
+  border: 1px solid var(--rule);
+  box-shadow: 0 22px 36px -34px var(--shadow);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* The inner rule of a certificate's double frame. */
+.certificate::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid var(--rule);
+  pointer-events: none;
+}
+
+.seal {
+  width: min(14rem, 78%);
+}
+
+.seal-text {
+  font-family: var(--mono);
+  font-size: 8.2px;
+  fill: var(--ink-2);
+}
+
+/* The rim turns slowly, like a dial, while the certificate is hovered. */
+.seal-rim {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .seal-rim {
+    animation: seal-turn 60s linear infinite paused;
+  }
+  .certificate:hover .seal-rim {
+    animation-play-state: running;
+  }
+}
+
+@keyframes seal-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cert-no {
+  margin-top: 1.75rem;
+  color: var(--accent);
+}
+
+.cert-name {
+  margin-top: 0.55rem;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 3vw, 2.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.cert-level {
+  margin-top: 0.3rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.cert-level::after {
+  content: "";
+  display: block;
+  width: 2rem;
+  height: 1px;
+  margin: 1.1rem auto 0;
+  background: var(--accent);
+}
+
+.cert-desc {
+  max-width: 36ch;
+  margin-top: 1.1rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.cert-meta {
+  width: 100%;
+  max-width: 27rem;
+  margin-top: 1.6rem;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+}
+
+.cert-meta div {
+  display: grid;
+  grid-template-columns: 7.25rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.cert-meta dt {
+  padding-top: 0.2rem;
+}
+
+.cert-meta dd {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.cert-verify {
+  margin-top: 1.5rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .certificates {
+    grid-template-columns: minmax(0, 36rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .cert-meta div {
+    grid-template-columns: 6.25rem minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* Chronology                                                          */
 /* ------------------------------------------------------------------ */
 
@@ -1060,12 +1215,15 @@ main {
   color: var(--ink);
 }
 
-.chron-verify {
+.chron-ref {
+  margin-left: 0.25rem;
   font-family: var(--mono);
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
+  color: var(--accent);
+  text-decoration-color: var(--accent-soft);
 }
 
 .chron-detail {

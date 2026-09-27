@@ -1,6 +1,7 @@
 import Header from "./components/Header.jsx";
+import Seal from "./art/Seal.jsx";
 import { ModelContained, plateArt } from "./art/plates.jsx";
-import { profile, frontispiece, statement, projects, chronology, materials } from "./data.js";
+import { profile, frontispiece, statement, certificates, projects, chronology, materials } from "./data.js";
 
 const year = new Date().getFullYear();
 
@@ -24,6 +25,48 @@ function SectionHead({ index, kicker, title }) {
       </p>
       <h2>{title}</h2>
     </header>
+  );
+}
+
+// A credential set out like a certificate: seal, name, and the particulars.
+function Certificate({ cert }) {
+  return (
+    <article className="certificate" aria-labelledby={`cert-${cert.id}`}>
+      <Seal
+        id={cert.id}
+        inscription={cert.inscription}
+        badge={cert.badge}
+        pattern={cert.pattern}
+        label={`Seal for ${cert.title}, ${cert.level}: a generated guilloche band around the official badge.`}
+      />
+      <p className="cert-no mono">Credential {cert.numeral}</p>
+      <h3 className="cert-name" id={`cert-${cert.id}`}>
+        {cert.title}
+      </h3>
+      <p className="cert-level">{cert.level}</p>
+      <p className="cert-desc">{cert.description}</p>
+      <dl className="cert-meta">
+        <div>
+          <dt className="mono">Issued</dt>
+          <dd>{cert.issued}</dd>
+        </div>
+        <div>
+          <dt className="mono">Valid until</dt>
+          <dd>{cert.validThrough}</dd>
+        </div>
+        <div>
+          <dt className="mono">Assessment</dt>
+          <dd>Proctored exam</dd>
+        </div>
+        <div>
+          <dt className="mono">Covers</dt>
+          <dd>{cert.covers}</dd>
+        </div>
+      </dl>
+      <p className="cert-verify">
+        <Ext href={cert.href}>Verify on Credly</Ext>
+      </p>
+    </article>
   );
 }
 
@@ -161,9 +204,20 @@ export default function App() {
           </div>
         </section>
 
+        {/* Certificates */}
+        <section className="section" id="certificates" aria-labelledby="certificates-title">
+          <SectionHead index="3" kicker="Verified by Anthropic" title={<span id="certificates-title">Certificates</span>} />
+          <p className="section-lead">{certificates.lead}</p>
+          <div className="certificates">
+            {certificates.items.map((c) => (
+              <Certificate key={c.id} cert={c} />
+            ))}
+          </div>
+        </section>
+
         {/* Chronology */}
         <section className="section" id="chronology" aria-labelledby="chronology-title">
-          <SectionHead index="3" kicker="Experience & education" title={<span id="chronology-title">Chronology</span>} />
+          <SectionHead index="4" kicker="Experience & education" title={<span id="chronology-title">Chronology</span>} />
           <ol className="chronology">
             {chronology.map((c) => (
               <li key={c.year} className="chron-row">
@@ -173,12 +227,12 @@ export default function App() {
                     <li key={e.text}>
                       <p className="chron-text">
                         {e.text}
-                        {e.href && (
+                        {e.ref && (
                           <>
                             {" "}
-                            <span className="chron-verify">
-                              <Ext href={e.href}>verify</Ext>
-                            </span>
+                            <a className="chron-ref" href={`#${e.ref}`}>
+                              see § 3
+                            </a>
                           </>
                         )}
                       </p>
@@ -205,7 +259,7 @@ export default function App() {
 
         {/* Enquiries */}
         <section className="section enquiries" id="enquiries" aria-labelledby="enquiries-title">
-          <SectionHead index="4" kicker="Roles, collaborations, conversations" title={<span id="enquiries-title">Enquiries</span>} />
+          <SectionHead index="5" kicker="Roles, collaborations, conversations" title={<span id="enquiries-title">Enquiries</span>} />
           <p className="enq-lead">
             For software or AI engineering roles, or a conversation about backend systems, LLMs and agents, write to
           </p>

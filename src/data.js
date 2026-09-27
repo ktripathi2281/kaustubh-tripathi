@@ -124,18 +124,51 @@ export const projects = [
   },
 ];
 
+// Official details from each credential's public Open Badges record on Credly.
+export const certificates = {
+  lead: "Two proctored exams from Anthropic on building production systems with Claude, passed a week apart in September 2026.",
+  items: [
+    {
+      id: "architect",
+      numeral: "I",
+      title: "Claude Certified Architect",
+      level: "Foundations",
+      description:
+        "For solution architects: designing and building production-grade applications on Claude with Claude Code, the Agent SDK, the Claude API and MCP.",
+      issued: "19 September 2026",
+      validThrough: "September 2027",
+      covers: "AI system design, multi-agent orchestration, context management, tool & MCP design, production reliability",
+      href: "https://www.credly.com/badges/2bfa241d-e6f9-4330-8f23-37c70505c45a/public_url",
+      badge: "/images/badges/claude-architect.png",
+      inscription: "Claude Certified Architect · Foundations · MMXXVI · ",
+      // An even, regular lattice: structure first.
+      pattern: { r0: 76, amp: 12, waves: 16, copies: 5 },
+    },
+    {
+      id: "developer",
+      numeral: "II",
+      title: "Claude Certified Developer",
+      level: "Foundations",
+      description:
+        "For developers: building, integrating and shipping production applications and agents on Claude with the Claude API, Claude Code, custom tools and MCP servers.",
+      issued: "12 September 2026",
+      validThrough: "September 2027",
+      covers: "Agent development, Claude API integration, MCP server development, evals & debugging, application security",
+      href: "https://www.credly.com/badges/2e1ecb88-4f11-4f3c-b7cf-a10251856c05/public_url",
+      badge: "/images/badges/claude-developer.png",
+      inscription: "Claude Certified Developer · Foundations · MMXXVI · ",
+      // A looser weave with a slow swell running through it.
+      pattern: { r0: 76, amp: 10, waves: 13, copies: 7, amp2: 4, waves2: 5 },
+    },
+  ],
+};
+
 export const chronology = [
   {
     year: "2026",
     entries: [
-      {
-        text: "Claude Certified Architect, Foundations, Anthropic",
-        href: "https://www.credly.com/badges/2bfa241d-e6f9-4330-8f23-37c70505c45a/public_url",
-      },
-      {
-        text: "Claude Certified Developer, Foundations, Anthropic",
-        href: "https://www.credly.com/badges/2e1ecb88-4f11-4f3c-b7cf-a10251856c05/public_url",
-      },
+      { text: "Claude Certified Architect, Foundations, Anthropic", ref: "certificates" },
+      { text: "Claude Certified Developer, Foundations, Anthropic", ref: "certificates" },
     ],
   },
   {

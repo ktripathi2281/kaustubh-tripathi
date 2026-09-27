@@ -2,13 +2,11 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const PlotContext = createContext({ active: null, setActive: () => {}, parts: {} });
 
-// Frames a drawing like a mounted print. Strokes "plot" themselves the first
-// time the drawing scrolls into view, and again whenever Replot is pressed.
-// Hovering (or tapping) a <Part> brings it forward and reads it in the caption.
-export default function Plot({ viewBox, label, caption, parts = {}, children }) {
+// Plotting lifecycle shared by every drawing: strokes "plot" themselves the
+// first time the drawing scrolls into view, and again after replot().
+export function usePlotPhase() {
   const ref = useRef(null);
   const [phase, setPhase] = useState("idle"); // idle → plotted; replot: reset → plotted
-  const [active, setActive] = useState(null);
 
   useEffect(() => {
     if (phase !== "idle") return;
@@ -43,15 +41,25 @@ export default function Plot({ viewBox, label, caption, parts = {}, children }) 
     };
   }, [phase]);
 
+  return { ref, phase, replot: () => setPhase("reset") };
+}
+
+export const plotClass = (phase) =>
+  ["plot", phase === "plotted" && "is-plotted", phase === "reset" && "is-reset"].filter(Boolean).join(" ");
+
+// Frames a drawing like a mounted print. Hovering (or tapping) a <Part>
+// brings it forward and reads it in the caption.
+export default function Plot({ viewBox, label, caption, parts = {}, children }) {
+  const { ref, phase, replot: reset } = usePlotPhase();
+  const [active, setActive] = useState(null);
+
   function replot() {
     setActive(null);
-    setPhase("reset");
+    reset();
   }
 
   const reading = active && parts[active];
-  const cls = ["plot", phase === "plotted" && "is-plotted", phase === "reset" && "is-reset", active && "has-focus"]
-    .filter(Boolean)
-    .join(" ");
+  const cls = `${plotClass(phase)}${active ? " has-focus" : ""}`;
 
   return (
     <PlotContext.Provider value={{ active, setActive, parts }}>

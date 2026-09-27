@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from "react";
 const nav = [
   { id: "plates", label: "Plates", index: "1" },
   { id: "statement", label: "Statement", index: "2" },
-  { id: "chronology", label: "Chronology", index: "3" },
-  { id: "enquiries", label: "Enquiries", index: "4" },
+  { id: "certificates", label: "Certificates", index: "3" },
+  { id: "chronology", label: "Chronology", index: "4" },
+  { id: "enquiries", label: "Enquiries", index: "5" },
 ];
 
 function readTheme() {
@@ -36,7 +37,7 @@ export default function Header({ plates = [], email }) {
     root.classList.add("contents-open");
     closeRef.current?.focus();
     const onKey = (e) => e.key === "Escape" && setOpen(false);
-    const wide = window.matchMedia("(min-width: 681px)");
+    const wide = window.matchMedia("(min-width: 801px)");
     const onWide = (e) => e.matches && setOpen(false);
     window.addEventListener("keydown", onKey);
     wide.addEventListener("change", onWide);
