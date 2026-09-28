@@ -9,6 +9,7 @@ export default defineConfig({
       input: {
         main: "index.html",
         kavach: "essays/kavach/index.html",
+        leetcode: "essays/leetcode/index.html",
       },
     },
   },

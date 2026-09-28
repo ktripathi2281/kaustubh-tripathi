@@ -76,7 +76,10 @@ export const projects = [
     ],
     drawing:
       "Each loop is one iteration of the planning agent, reaching out to one of its four tools and returning. The red line is the audit log, with one mark per iteration.",
-    links: [{ label: "Source", href: "https://github.com/ktripathi2281/LeetCode-Tracker" }],
+    links: [
+      { label: "Essay", href: "/essays/leetcode/", internal: true },
+      { label: "Source", href: "https://github.com/ktripathi2281/LeetCode-Tracker" },
+    ],
   },
   {
     id: "skillbarter",

@@ -28,8 +28,10 @@ export default function EssayPage({ source, plate }) {
     .parse(text)
     .replace(/<a href="(https?:)/g, '<a target="_blank" rel="noreferrer" href="$1');
   const minutes = Math.max(1, Math.round(text.split(/\s+/).length / 230));
-  const project = projects.find((p) => p.id === plate);
-  const Art = plateArt[plate];
+  // The essay's plate: named in its front matter, or the same as its slug.
+  const plateId = meta.plate || plate;
+  const project = projects.find((p) => p.id === plateId);
+  const Art = plateArt[plateId];
 
   return (
     <>
@@ -69,7 +71,7 @@ export default function EssayPage({ source, plate }) {
           <div className="essay-body" dangerouslySetInnerHTML={{ __html: html }} />
 
           <footer className="essay-end">
-            <a href={`/#${plate}`}>Plate {project?.plate} in the catalogue</a>
+            <a href={`/#${plateId}`}>Plate {project?.plate} in the catalogue</a>
             <a href="/">Return to the catalogue ↩</a>
           </footer>
         </article>
