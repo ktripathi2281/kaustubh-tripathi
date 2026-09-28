@@ -52,6 +52,7 @@ export const projects = [
     drawing:
       "Six lines, one per model route, converge into one case file of ten steps. The red line is the rules engine, running alongside the whole way so the app still works with no API key.",
     links: [
+      { label: "Essay", href: "/essays/kavach/", internal: true },
       { label: "Visit", href: "https://cybercrime-assistant.vercel.app" },
       { label: "Source", href: "https://github.com/ashusnapx/hackathon" },
     ],

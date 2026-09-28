@@ -14,7 +14,9 @@ function readTheme() {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-export default function Header({ plates = [], email }) {
+// On pages other than the catalogue (`home` false), links lead back to it.
+export default function Header({ plates = [], email, home = true }) {
+  const base = home ? "" : "/";
   const [theme, setTheme] = useState(readTheme);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -100,17 +102,19 @@ export default function Header({ plates = [], email }) {
   function go(e, id) {
     e.preventDefault();
     const target = document.getElementById(id);
+    if (!target) {
+      window.location.href = `/#${id}`;
+      return;
+    }
     const root = document.documentElement;
     root.classList.remove("contents-open");
     returnFocus.current = false;
-    if (target) {
-      root.style.scrollBehavior = "auto";
-      target.scrollIntoView({ block: "start" });
-      root.style.scrollBehavior = "";
-      target.setAttribute("tabindex", "-1");
-      target.focus({ preventScroll: true });
-      history.replaceState(null, "", `#${id}`);
-    }
+    root.style.scrollBehavior = "auto";
+    target.scrollIntoView({ block: "start" });
+    root.style.scrollBehavior = "";
+    target.setAttribute("tabindex", "-1");
+    target.focus({ preventScroll: true });
+    history.replaceState(null, "", `#${id}`);
     lift();
   }
 
@@ -120,14 +124,14 @@ export default function Header({ plates = [], email }) {
     <>
       <header className={`site-header${scrolled ? " is-scrolled" : ""}`}>
         <div className="header-inner">
-          <a href="#top" className="monogram" aria-label="Kaustubh Tripathi, back to top">
+          <a href={home ? "#top" : "/"} className="monogram" aria-label={home ? "Kaustubh Tripathi, back to top" : "Kaustubh Tripathi, the catalogue"}>
             K<span>·</span>T
           </a>
           <nav aria-label="Primary" className="nav-inline">
             <ul className="nav-list">
               {nav.map((item) => (
                 <li key={item.id}>
-                  <a href={`#${item.id}`}>{item.label}</a>
+                  <a href={`${base}#${item.id}`}>{item.label}</a>
                 </li>
               ))}
             </ul>
@@ -175,7 +179,7 @@ export default function Header({ plates = [], email }) {
           <ol className="contents-list">
             {nav.map((item, i) => (
               <li key={item.id} style={{ "--i": i }}>
-                <a href={`#${item.id}`} onClick={(e) => go(e, item.id)}>
+                <a href={`${base}#${item.id}`} onClick={(e) => go(e, item.id)}>
                   <span className="contents-index">§ {item.index}</span>
                   <span className="contents-label">{item.label}</span>
                 </a>
@@ -183,7 +187,7 @@ export default function Header({ plates = [], email }) {
                   <ol className="contents-plates">
                     {plates.map((p) => (
                       <li key={p.id}>
-                        <a href={`#${p.id}`} onClick={(e) => go(e, p.id)}>
+                        <a href={`${base}#${p.id}`} onClick={(e) => go(e, p.id)}>
                           <span className="contents-plate-no">{p.plate}</span>
                           {p.name}
                         </a>

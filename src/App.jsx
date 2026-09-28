@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Header from "./components/Header.jsx";
 import Seal from "./art/Seal.jsx";
 import { ModelContained, plateArt } from "./art/plates.jsx";
@@ -107,18 +108,49 @@ function Plate({ project, flip }) {
         </ol>
 
         <p className="plate-links">
-          {project.links.map((l) => (
-            <Ext key={l.href} href={l.href}>
-              {l.label}
-            </Ext>
-          ))}
+          {project.links.map((l) =>
+            l.internal ? (
+              <a key={l.href} href={l.href}>
+                {l.label}
+                <span className="arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            ) : (
+              <Ext key={l.href} href={l.href}>
+                {l.label}
+              </Ext>
+            )
+          )}
         </p>
       </div>
     </article>
   );
 }
 
+// Arriving from another page at /#section: the browser looks for the section
+// before React has drawn it, so jump once it exists, and again once the fonts
+// have settled the layout.
+function useArrivalAnchor() {
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id) return;
+    const jump = () => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const root = document.documentElement;
+      root.style.scrollBehavior = "auto";
+      el.scrollIntoView({ block: "start" });
+      root.style.scrollBehavior = "";
+    };
+    jump();
+    document.fonts?.ready.then(jump);
+  }, []);
+}
+
 export default function App() {
+  useArrivalAnchor();
+
   return (
     <>
       <a href="#main" className="skip-link">
