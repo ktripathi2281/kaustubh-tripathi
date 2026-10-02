@@ -1496,6 +1496,27 @@ main {
   text-transform: uppercase;
 }
 
+/* The page served for an address that isn't one (404.html). */
+.lost .essay-head {
+  padding-bottom: clamp(4.5rem, 10vw, 7rem);
+}
+
+.lost-path {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.78em;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+}
+
+.lost-links {
+  margin-top: 2.25rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 /* ------------------------------------------------------------------ */
 /* Footer                                                              */
 /* ------------------------------------------------------------------ */

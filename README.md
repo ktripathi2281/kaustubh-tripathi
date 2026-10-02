@@ -10,6 +10,8 @@ React 19 + Vite, plain CSS, no animation or UI libraries.
 - **Drawings:** [`src/art/plates.jsx`](src/art/plates.jsx). Seeded, so every visit draws the same image.
 - **Styles:** [`src/styles.css`](src/styles.css). Colour tokens for light and dark are at the top.
 - **Type:** Cormorant Garamond (display), Newsreader (text), IBM Plex Mono (labels).
+- **Link previews:** [`cards.html`](cards.html), a dev-only page, draws the share images in `public/og/` with the
+  footer's stippled horizon. Capture them again after adding an essay.
 
 ```bash
 npm install

@@ -13,6 +13,7 @@ export const profile = {
   // Public Web3Forms access key for the letter (safe to publish). Empty: letters open in the visitor's mail app.
   letterKey: "012be787-faa5-4745-90a7-27775d7a9ca8",
   source: "https://github.com/ktripathi2281/kaustubh-tripathi",
+  site: "https://kauswhynot.vercel.app",
   availability: "Open to software & AI engineering roles",
   lede: "I build dependable software, including language-model systems that hold their shape when the model doesn't.",
 };

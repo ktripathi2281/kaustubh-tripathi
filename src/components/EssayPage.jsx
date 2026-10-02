@@ -4,23 +4,10 @@ import Footer from "./Footer.jsx";
 import Letter from "./Letter.jsx";
 import { plateArt } from "../art/plates.jsx";
 import { profile, projects } from "../data.js";
-
-// Split "---\nkey: value\n---\nbody" into its fields and the markdown body.
-function parse(source) {
-  const match = source.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  if (!match) return { meta: {}, body: source };
-  const meta = Object.fromEntries(
-    match[1]
-      .split("\n")
-      .map((line) => line.match(/^(\w+):\s*(.*)$/))
-      .filter(Boolean)
-      .map(([, k, v]) => [k, v.trim()])
-  );
-  return { meta, body: match[2] };
-}
+import { parse } from "../lib/frontmatter.js";
 
 export default function EssayPage({ source, plate }) {
-  const { meta, body } = parse(source.replace(/\r\n/g, "\n"));
+  const { meta, body } = parse(source);
   // The file opens with its own title and subtitle so it reads well on its
   // own; the page sets those in the header instead.
   const text = body.replace(/^\s*#\s.+\n+\*[^\n]+\*\n/, "");
