@@ -1,9 +1,9 @@
 import { marked } from "marked";
 import Header from "./Header.jsx";
+import Footer from "./Footer.jsx";
+import Letter from "./Letter.jsx";
 import { plateArt } from "../art/plates.jsx";
 import { profile, projects } from "../data.js";
-
-const year = new Date().getFullYear();
 
 // Split "---\nkey: value\n---\nbody" into its fields and the markdown body.
 function parse(source) {
@@ -77,16 +77,8 @@ export default function EssayPage({ source, plate }) {
         </article>
       </main>
 
-      <footer className="colophon">
-        <p className="mono">Colophon</p>
-        <p>Set in Cormorant Garamond, Newsreader and IBM Plex Mono. The drawing above is generated in code and plotted live in your browser.</p>
-        <p className="colophon-end">
-          <span>
-            © {year} {profile.name}
-          </span>
-          <a href="#main">Return to the beginning ↑</a>
-        </p>
-      </footer>
+      <Footer home={false} />
+      <Letter />
     </>
   );
 }

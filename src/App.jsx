@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import Header from "./components/Header.jsx";
+import Footer from "./components/Footer.jsx";
+import Letter from "./components/Letter.jsx";
 import Seal from "./art/Seal.jsx";
 import { ModelContained, plateArt } from "./art/plates.jsx";
 import { profile, frontispiece, statement, certificates, projects, chronology, materials } from "./data.js";
@@ -285,7 +287,7 @@ export default function App() {
           <p className="enq-lead">
             For software or AI engineering roles, or a conversation about backend systems, LLMs and agents, write to
           </p>
-          <a className="enq-email" href={`mailto:${profile.email}`}>
+          <a className="enq-email" href={`mailto:${profile.email}`} data-letter>
             {profile.email}
           </a>
           <ul className="enq-links">
@@ -302,20 +304,8 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="colophon">
-        <p className="mono">Colophon</p>
-        <p>
-          Set in Cormorant Garamond, Newsreader and IBM Plex Mono. Every drawing on this page is generated in code and
-          plotted live in your browser. There are no images of the art, only instructions for making it.{" "}
-          <Ext href={profile.source}>Read the instructions</Ext>
-        </p>
-        <p className="colophon-end">
-          <span>
-            © {year} {profile.name}
-          </span>
-          <a href="#top">Return to the beginning ↑</a>
-        </p>
-      </footer>
+      <Footer />
+      <Letter />
     </>
   );
 }

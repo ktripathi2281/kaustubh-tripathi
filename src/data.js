@@ -10,6 +10,8 @@ export const profile = {
   github: "https://github.com/ktripathi2281",
   linkedin: "https://www.linkedin.com/in/kaustubh-tripathi",
   resume: "/resume.pdf",
+  // Public Web3Forms access key for the letter (safe to publish). Empty: letters open in the visitor's mail app.
+  letterKey: "012be787-faa5-4745-90a7-27775d7a9ca8",
   source: "https://github.com/ktripathi2281/kaustubh-tripathi",
   availability: "Open to software & AI engineering roles",
   lede: "I build dependable software, including language-model systems that hold their shape when the model doesn't.",
@@ -196,4 +198,10 @@ export const materials = [
   ["Frameworks", "Spring Boot, Spring Security, Node.js, Express, React, Next.js"],
   ["Data", "PostgreSQL, MongoDB, Redis, MySQL, Supabase"],
   ["Tools", "Docker, GitHub Actions, Jenkins, Git, Linux, Vitest"],
+];
+
+// The essays, for the footer's Reading column (titles match content/essays/*.md).
+export const essays = [
+  { slug: "kavach", title: "Confidently wrong" },
+  { slug: "leetcode", title: "Show your work" },
 ];

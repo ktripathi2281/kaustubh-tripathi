@@ -200,7 +200,9 @@ export default function Header({ plates = [], email, home = true }) {
           </ol>
           {email && (
             <p className="contents-foot">
-              <a href={`mailto:${email}`}>{email}</a>
+              <a href={`mailto:${email}`} data-letter>
+                {email}
+              </a>
             </p>
           )}
         </nav>
