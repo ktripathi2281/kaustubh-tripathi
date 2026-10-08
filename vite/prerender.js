@@ -18,8 +18,11 @@ export default function prerender({ entry }) {
       async handler(html) {
         if (!html.includes("<!--ssr:")) return html;
         if (!server) {
+          // No file watcher and no dependency scan: either keeps the process
+          // alive after the build, and a build needs neither.
           server = await createServer({
-            server: { middlewareMode: true, hmr: false, ws: false },
+            server: { middlewareMode: true, hmr: false, ws: false, watch: null },
+            optimizeDeps: { noDiscovery: true, include: [] },
             appType: "custom",
             logLevel: "error",
           });
