@@ -1,22 +1,41 @@
 # Kaustubh Tripathi · Selected Works
 
-A portfolio set out like an exhibition catalogue. Each project is a numbered plate: a drawing generated in code
-that encodes how the system works, mounted beside a museum-style wall label. The drawings plot themselves once,
-like a pen plotter, when they scroll into view.
+A portfolio set out like a hanging scroll. Warm paper, soft black ink, and one red, used only on seals. Each
+project is a scene. A single ink line runs across each scene like a horizon, level under its text and rising
+like a distant ridge beyond it. Read down the page, it wraps from scene to scene like a line of writing. The
+line draws itself as each scene scrolls into view and ends, at the foot of the page, at a seal bearing the
+name in katakana, above layers of stippled ridges.
 
-React 19 + Vite, plain CSS, no animation or UI libraries.
+The big titles turn to katakana: on hover with a mouse, or once as each scene arrives on a phone. Every
+Japanese string on the site is in [`src/ja.js`](src/ja.js) and is either decorative or shown beside its
+English.
 
-- **Content:** [`src/data.js`](src/data.js). All text, links and metadata.
-- **Drawings:** [`src/art/plates.jsx`](src/art/plates.jsx). Seeded, so every visit draws the same image.
-- **Styles:** [`src/styles.css`](src/styles.css). Colour tokens for light and dark are at the top.
-- **Type:** Cormorant Garamond (display), Newsreader (text), IBM Plex Mono (labels).
-- **Link previews:** [`cards.html`](cards.html), a dev-only page, draws the share images in `public/og/` with the
-  footer's stippled horizon. Capture them again after adding an essay.
+React 19 + Vite, plain CSS, no UI or animation libraries. Every page is rendered to static HTML at build
+time, so it reads in full without JavaScript; the main page then hydrates.
+
+- **Content:** [`src/data.js`](src/data.js) holds all text, links and metadata. Essays are Markdown in
+  [`content/essays/`](content/essays/).
+- **Japanese:** [`src/ja.js`](src/ja.js) holds every Japanese string, with its reading.
+- **The ink line:** [`src/lib/ridge.js`](src/lib/ridge.js). It is seeded, so every visit draws the same
+  line. [`InkLine.jsx`](src/components/InkLine.jsx) re-plots it in pixels once the page runs, so the stroke can
+  be drawn as a fraction of its length.
+- **The ridges:** [`src/lib/stipple.js`](src/lib/stipple.js), an ordered dither on a canvas.
+- **Styles:** [`src/styles.css`](src/styles.css). The colour tokens are at the top.
+- **Type:** Shippori Mincho (names, titles, text and all Japanese) and Zen Kaku Gothic New (small labels),
+  both self-hosted in [`src/fonts/`](src/fonts/). The Japanese font holds only the characters in
+  `src/ja.js`.
+- **Prerendering:** [`vite/prerender.js`](vite/prerender.js) fills each page's `<!--ssr:…-->` placeholder
+  from [`src/entry-server.jsx`](src/entry-server.jsx), in dev and in the build.
+  [`vite/markdown.js`](vite/markdown.js) turns the essays into HTML at build time.
+- **Link previews:** [`cards.html`](cards.html) is a dev-only page that draws the share images in
+  `public/og/` at 1200×630.
 
 ```bash
 npm install
 npm run dev      # local dev server
 npm run build    # production build to dist/
+npm run fonts    # rebuild the font subsets after changing src/ja.js
+npm run cards    # recapture public/og/*.png (needs the dev server and Chrome or Edge)
 ```
 
 Deploys to Vercel as a standard Vite project.

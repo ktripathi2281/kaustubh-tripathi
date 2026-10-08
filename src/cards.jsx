@@ -1,80 +1,84 @@
 import { StrictMode, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
-import { drawHorizon } from "./art/landscape.js";
+import InkLine from "./components/InkLine.jsx";
+import { NameSeal } from "./components/marks.jsx";
 import { profile } from "./data.js";
 import { parse } from "./lib/frontmatter.js";
+import { drawRidges } from "./lib/stipple.js";
 import "./styles.css";
 import "./cards.css";
 
-// The link-preview images in public/og/, one per page, drawn with the footer's
-// horizon. A dev-only page: run `npm run dev`, open /cards.html, and capture
-// each card at 2× (Chrome DevTools: select a .share-card, "Capture node
-// screenshot") as public/og/<id>.png.
+// The link-preview images in public/og/, one per page (1200×630): paper, the
+// name, the ink line ending at the name seal, and the ridges under it.
+// A dev-only page: with `npm run dev` running, `npm run cards` captures each
+// card as public/og/<id>.png. /cards.html shows them all; ?card=<id> shows one.
 const sources = import.meta.glob("../content/essays/*.md", { query: "?raw", import: "default", eager: true });
 const essays = Object.entries(sources).map(([path, source]) => ({
   slug: path.match(/([\w-]+)\.md$/)[1],
   meta: parse(source).meta,
 }));
 
-function Landscape() {
+function Ridges() {
   const canvas = useRef(null);
-  useEffect(() => drawHorizon(canvas.current), []);
-  return <canvas ref={canvas} className="card-horizon" aria-hidden="true" />;
+  useEffect(() => drawRidges(canvas.current), []);
+  return (
+    <div className="ridges card-ridges" aria-hidden="true">
+      <canvas ref={canvas} />
+    </div>
+  );
 }
 
-function Card({ id, byline, children }) {
+function Card({ id, children }) {
   return (
     <section className="share-card" id={`card-${id}`}>
-      <div className="card-top">
-        <span className="monogram">
-          K<span>·</span>T
-        </span>
-        {byline && <span className="mono">{profile.name}</span>}
-        <span className="mono card-url">{profile.site.replace(/^https?:\/\//, "")}</span>
+      <p className="label card-url">{profile.site.replace(/^https?:\/\//, "")}</p>
+      <div className="card-text">{children}</div>
+      <div className="level card-level">
+        <InkLine seed={2281} layout="wide" end={78} />
+        <NameSeal />
       </div>
-      {children}
-      <Landscape />
+      <Ridges />
     </section>
   );
 }
 
 function Cards() {
-  return (
-    <main className="cards">
-      <Card id="home">
-        <div className="card-home">
-          <h1 className="card-name">
-            <span>{profile.first}</span>
-            <span className="card-last">{profile.last}</span>
-          </h1>
-          <dl className="card-facts">
-            <div>
-              <dt className="mono">Practice</dt>
-              <dd>{profile.role}</dd>
-            </div>
-            <div>
-              <dt className="mono">Based in</dt>
-              <dd>{profile.location}, India</dd>
-            </div>
-            <div>
-              <dt className="mono">Status</dt>
-              <dd>{profile.availability}</dd>
-            </div>
-          </dl>
-        </div>
-      </Card>
+  const only = new URLSearchParams(location.search).get("card");
+  const cards = [
+    {
+      id: "home",
+      body: (
+        <>
+          <h1 className="card-name">{profile.name}</h1>
+          <p className="label card-sub">
+            {profile.role} · {profile.location}
+          </p>
+        </>
+      ),
+    },
+    ...essays.map(({ slug, meta }) => ({
+      id: slug,
+      body: (
+        <>
+          <p className="label">
+            Essay {meta.number} · {meta.project}
+          </p>
+          <h1 className="card-title">{meta.title}</h1>
+          <p className="label card-sub">{profile.name}</p>
+        </>
+      ),
+    })),
+  ];
 
-      {essays.map(({ slug, meta }) => (
-        <Card key={slug} id={slug} byline>
-          <div className="card-essay">
-            <p className="mono card-kicker">
-              Essay {meta.number} · {meta.project}
-            </p>
-            <h1 className="card-title">{meta.title}</h1>
-            <p className="card-sub">{meta.subtitle}</p>
-          </div>
-        </Card>
-      ))}
+  return (
+    <main className={`cards${only ? " cards--one" : ""}`}>
+      {cards
+        .filter((c) => !only || c.id === only)
+        .map((c) => (
+          <Card key={c.id} id={c.id}>
+            {c.body}
+          </Card>
+        ))}
     </main>
   );
 }

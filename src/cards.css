@@ -1,134 +1,79 @@
-/* Link-preview cards (cards.html, dev only). Each card is one 1200×630 image. */
-
-/* No paper grain: noise would bloat the images and blur at thumbnail size. */
-body::before {
-  display: none;
-}
+/* The share cards (cards.html), each exactly 1200×630. */
 
 .cards {
   display: grid;
-  justify-content: center;
   gap: 48px;
-  max-width: none;
+  justify-content: start;
   padding: 48px;
 }
 
+.cards--one {
+  padding: 0;
+}
+
 .share-card {
+  --end: 78%;
   position: relative;
   width: 1200px;
   height: 630px;
   overflow: hidden;
-  background: var(--paper);
-}
-
-.share-card .mono {
-  font-size: 15px;
-  letter-spacing: 0.12em;
-}
-
-.card-top {
-  position: absolute;
-  top: 46px;
-  left: 72px;
-  right: 72px;
-  display: flex;
-  align-items: baseline;
-  gap: 20px;
-}
-
-.card-top .monogram {
-  margin-right: 0;
-  font-size: 36px;
+  background-color: var(--paper);
+  background-image: var(--fibre);
 }
 
 .card-url {
-  margin-left: auto;
-}
-
-.card-horizon {
   position: absolute;
-  left: 0;
-  bottom: 0;
-  display: block;
-  width: 100%;
-  height: 300px;
+  top: 44px;
+  right: 64px;
 }
 
-/* The catalogue's card: the name as on the frontispiece, with its facts. */
-.card-home {
+.card-text {
   position: absolute;
   top: 120px;
-  left: 72px;
-  right: 72px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  left: 96px;
+  right: 96px;
 }
 
 .card-name {
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: 128px;
-  line-height: 0.84;
-  letter-spacing: -0.03em;
-  color: var(--ink);
-}
-
-.card-name span {
-  display: block;
-}
-
-.card-last {
-  padding-left: 0.55em;
-  font-style: italic;
-}
-
-.card-facts {
-  width: 390px;
-  margin-top: 6px;
-}
-
-.card-facts div {
-  padding: 10px 0 12px;
-  border-top: 1px solid var(--rule);
-}
-
-.card-facts dd {
-  margin: 4px 0 0;
-  font-size: 23px;
-  line-height: 1.3;
-  color: var(--ink);
-}
-
-/* An essay's card: its number, title and subtitle, as on its page. */
-.card-essay {
-  position: absolute;
-  top: 124px;
-  left: 72px;
-  right: 72px;
-}
-
-.card-kicker.mono {
-  color: var(--accent);
+  font-size: 92px;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
 }
 
 .card-title {
-  margin-top: 16px;
-  font-family: var(--display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 112px;
-  line-height: 0.92;
-  letter-spacing: -0.025em;
-  color: var(--ink);
+  margin: 14px 0 0;
+  font-size: 84px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
 }
 
 .card-sub {
-  max-width: 780px;
-  margin-top: 20px;
-  font-style: italic;
-  font-size: 30px;
-  line-height: 1.35;
-  text-wrap: balance;
-  color: var(--ink-2);
+  margin-top: 18px;
+  font-size: 18px;
+}
+
+.card-name + .card-sub {
+  font-size: 22px;
+}
+
+.card-level {
+  position: absolute;
+  top: 400px;
+  left: 0;
+  right: 0;
+}
+
+/* The line's strip, sized in pixels rather than screen heights. */
+.card-level .ink {
+  top: -54px;
+  height: 108px;
+}
+
+.card-ridges {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 200px;
+  margin: 0;
 }

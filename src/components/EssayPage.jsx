@@ -1,71 +1,45 @@
-import { marked } from "marked";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
-import Letter from "./Letter.jsx";
-import { plateArt } from "../art/plates.jsx";
-import { profile, projects } from "../data.js";
-import { parse } from "../lib/frontmatter.js";
+import { projects } from "../data.js";
 
-export default function EssayPage({ source, plate }) {
-  const { meta, body } = parse(source);
-  // The file opens with its own title and subtitle so it reads well on its
-  // own; the page sets those in the header instead.
-  const text = body.replace(/^\s*#\s.+\n+\*[^\n]+\*\n/, "");
-  const html = marked
-    .parse(text)
-    .replace(/<a href="(https?:)/g, '<a target="_blank" rel="noreferrer" href="$1');
-  const minutes = Math.max(1, Math.round(text.split(/\s+/).length / 230));
-  // The essay's plate: named in its front matter, or the same as its slug.
-  const plateId = meta.plate || plate;
-  const project = projects.find((p) => p.id === plateId);
-  const Art = plateArt[plateId];
+// `essay` comes from content/essays/<slug>.md, turned into HTML at build
+// time by vite/markdown.js.
+export default function EssayPage({ essay, slug }) {
+  const { meta, html, words } = essay;
+  const minutes = Math.max(1, Math.round(words / 230));
+  const project = projects.find((p) => p.id === (meta.plate || slug));
 
   return (
     <>
-      <a href="#main" className="skip-link">
-        Skip to content
+      <a href="#essay" className="skip-link">
+        Skip to the essay
       </a>
-      <Header plates={projects} email={profile.email} home={false} />
+      <Header home={false} />
 
-      <main id="main">
-        <article className="essay" aria-labelledby="essay-title">
+      <main className="essay" id="essay">
+        <article aria-labelledby="essay-title">
           <header className="essay-head">
-            <p className="mono essay-kicker">
+            <p className="label">
               Essay {meta.number} · {meta.project}
             </p>
             <h1 id="essay-title">{meta.title}</h1>
             {meta.subtitle && <p className="essay-sub">{meta.subtitle}</p>}
-            <p className="mono essay-meta">
+            <p className="label">
               {meta.with && <>With {meta.with} · </>}
               {minutes} min read
-              {/^draft/i.test(meta.status || "") && <span className="essay-draft">Draft</span>}
+              {/^draft/i.test(meta.status || "") && <> · Draft</>}
             </p>
           </header>
-
-          {Art && project && (
-            <div className="essay-plate">
-              <Art
-                caption={
-                  <>
-                    <span className="mono">Plate {project.plate}.</span> {project.name}, from the catalogue. Hover over
-                    or tap any line to read it.
-                  </>
-                }
-              />
-            </div>
-          )}
 
           <div className="essay-body" dangerouslySetInnerHTML={{ __html: html }} />
 
           <footer className="essay-end">
-            <a href={`/#${plateId}`}>Plate {project?.plate} in the catalogue</a>
-            <a href="/">Return to the catalogue ↩</a>
+            <a href="/">Back to the works</a>
+            {project && <a href={`/#${project.id}`}>{project.name}, in the works</a>}
           </footer>
         </article>
       </main>
-
       <Footer home={false} />
-      <Letter />
     </>
   );
 }

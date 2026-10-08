@@ -1,131 +1,100 @@
-import Horizon from "../art/Horizon.jsx";
-import { profile, projects, essays } from "../data.js";
+import { Horizon } from "./InkLine.jsx";
+import { NameSeal, VerticalLabel } from "./marks.jsx";
+import { essays, profile, projects } from "../data.js";
+import { ja } from "../ja.js";
 
+// The last line ends here, at the name seal, above the stippled ridges: this
+// far across, in % (styles.css sets the seal at the same --end).
+const END = { wide: 76, narrow: 80 };
 const year = new Date().getFullYear();
 
-function Icon({ name }) {
-  if (name === "github") {
-    return (
-      <svg viewBox="0 0 16 16" width="19" height="19" aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
-        />
-      </svg>
-    );
-  }
-  if (name === "linkedin") {
-    return (
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-        <rect x="3" y="3" width="18" height="18" rx="2.5" />
-        <path d="M8 10.5V17M12 17v-6.5M12 13.3c0-1.7 1.1-2.8 2.5-2.8S17 11.5 17 13.3V17" strokeLinecap="round" />
-        <circle cx="8" cy="7.4" r="0.9" fill="currentColor" stroke="none" />
-      </svg>
-    );
-  }
-  if (name === "resume") {
-    return (
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-        <path d="M6 3h8.5L19 7.5V21H6z" strokeLinejoin="round" />
-        <path d="M14 3v5h5M9 12h7M9 15.5h7M9 19h4" strokeLinecap="round" />
-      </svg>
-    );
-  }
+function Ext({ href, children }) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <rect x="3" y="5.5" width="18" height="13" rx="2" />
-      <path d="M3.6 7l8.4 6 8.4-6" strokeLinejoin="round" />
-    </svg>
+    <a href={href} target="_blank" rel="noreferrer">
+      {children}
+    </a>
   );
 }
 
-// The site's foot: who this is, every way into the catalogue, and a last
-// drawing, a stippled horizon, plotted underneath.
+// The foot of the page, mounted like the foot of a hanging scroll: a double
+// rule, how to get in touch, every way into the site, and the line's end.
 export default function Footer({ home = true }) {
   const base = home ? "" : "/";
-  const columns = [
-    {
-      title: "Works",
-      links: projects.map((p) => ({ label: p.name, href: `${base}#${p.id}` })),
-    },
-    {
-      title: "Reading",
-      links: [
-        ...essays.map((e) => ({ label: e.title, href: `/essays/${e.slug}/` })),
-        { label: "Statement", href: `${base}#statement` },
-        { label: "Certificates", href: `${base}#certificates` },
-        { label: "Chronology", href: `${base}#chronology` },
-      ],
-    },
-  ];
-  const icons = [
-    { name: "github", label: "GitHub", href: profile.github, external: true },
-    { name: "linkedin", label: "LinkedIn", href: profile.linkedin, external: true },
-    { name: "mail", label: `Write to ${profile.email}`, href: `mailto:${profile.email}`, letter: true },
-    { name: "resume", label: "Résumé, PDF", href: profile.resume, external: true },
-  ];
-  const ext = (external) => (external ? { target: "_blank", rel: "noreferrer" } : {});
+  const [user, domain] = profile.email.split("@");
 
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" id="contact" tabIndex={-1} aria-labelledby="contact-title">
       <div className="footer-inner">
-        <div className="footer-brand">
-          <a href={home ? "#top" : "/"} className="footer-brandmark">
-            <span className="footer-kt" aria-hidden="true">
-              K<span>·</span>T
-            </span>
-            <span className="footer-name">{profile.name}</span>
-          </a>
-          <p className="footer-line">Software &amp; AI engineer in {profile.location}. Open to software and AI engineering roles.</p>
-          <ul className="footer-icons">
-            {icons.map((i) => (
-              <li key={i.name}>
-                <a href={i.href} aria-label={i.label} title={i.label} {...ext(i.external)} {...(i.letter && { "data-letter": "" })}>
-                  <Icon name={i.name} />
-                </a>
+        <section className="head foot-contact" aria-labelledby="contact-title">
+          <VerticalLabel text={ja.contact} />
+          <div className="text">
+            <h2 className="label" id="contact-title">
+              Contact
+            </h2>
+            <a className="email" href={`mailto:${profile.email}`}>
+              {user}
+              <wbr />@{domain}
+            </a>
+            <p className="availability">{profile.availability}</p>
+            <ul className="links">
+              <li>
+                <Ext href={profile.github}>GitHub</Ext>
               </li>
-            ))}
-          </ul>
-        </div>
+              <li>
+                <Ext href={profile.linkedin}>LinkedIn</Ext>
+              </li>
+              <li>
+                <Ext href={profile.resume}>Résumé</Ext>
+              </li>
+            </ul>
+          </div>
+        </section>
 
-        <nav className="footer-cols" aria-label="Footer">
-          {columns.map((col) => (
-            <div key={col.title} className="footer-col">
-              <h2 className="mono">{col.title}</h2>
-              <ul>
-                {col.links.map((l) => (
-                  <li key={l.label}>
-                    <a href={l.href} {...ext(l.external)}>
-                      {l.label}
-                      {l.external && (
-                        <span className="arrow" aria-hidden="true">
-                          ↗
-                        </span>
-                      )}
-                    </a>
+        <nav className="foot-cols" aria-label="Site">
+          <div className="head">
+            <VerticalLabel text={ja.works} />
+            <div>
+              <h2 className="label">Works</h2>
+              <ul className="foot-list">
+                {projects.map((p) => (
+                  <li key={p.id}>
+                    <a href={`${base}#${p.id}`}>{p.name}</a>
                   </li>
                 ))}
               </ul>
             </div>
-          ))}
+          </div>
+          <div className="head">
+            <VerticalLabel text={ja.reading} />
+            <div>
+              <h2 className="label">Reading</h2>
+              <ul className="foot-list">
+                {essays.map((e) => (
+                  <li key={e.slug}>
+                    <a href={`/essays/${e.slug}/`}>{e.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </nav>
       </div>
 
-      <div className="footer-base">
-        <div className="footer-bottom">
-          <p>
+      <div className="foot-end">
+        <p className="foot-meta label">
+          <span>
             © {year} {profile.name}
-          </p>
-          <p>
-            <a href={profile.source} target="_blank" rel="noreferrer">
-              Plotted in your browser. Read the instructions
-              <span className="arrow" aria-hidden="true">
-                ↗
-              </span>
-            </a>
-          </p>
+          </span>
+          <a href={profile.source} target="_blank" rel="noreferrer" aria-label="Source of this site">
+            Source
+          </a>
+        </p>
+        <Horizon seed={2281} end={END}>
+          <NameSeal />
+        </Horizon>
+        <div className="ridges" aria-hidden="true">
+          <canvas />
         </div>
-        <Horizon />
       </div>
     </footer>
   );

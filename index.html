@@ -6,47 +6,49 @@
     <title>Kaustubh Tripathi · Software &amp; AI Engineer</title>
     <meta
       name="description"
-      content="Kaustubh Tripathi, software engineer in Bangalore. Backend systems in Java and Spring Boot, full-stack products, and LLM systems with guardrails and audit trails. Product Engineer at TCS."
+      content="Kaustubh Tripathi, software and AI engineer in Bangalore. Selected works: seven projects, from an AI cybercrime support platform to an LLM gateway in Go."
     />
     <meta name="author" content="Kaustubh Tripathi" />
     <meta property="og:title" content="Kaustubh Tripathi · Software &amp; AI Engineer" />
     <meta
       property="og:description"
-      content="Selected works: language-model systems that hold their shape when the model doesn't."
+      content="I build dependable software, including language-model systems that hold their shape when the model doesn't."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://kauswhynot.vercel.app/" />
     <meta property="og:site_name" content="Kaustubh Tripathi" />
     <meta property="og:image" content="https://kauswhynot.vercel.app/og/home.png" />
-    <meta property="og:image:width" content="2400" />
-    <meta property="og:image:height" content="1260" />
-    <meta property="og:image:alt" content="Kaustubh Tripathi, Software &amp; AI Engineer, Bangalore, above a stippled landscape of ridges and a setting sun." />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Kaustubh Tripathi, Software &amp; AI Engineer, Bangalore, on warm paper above a single ink line that ends at a red name seal." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#f2eee5" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#131210" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4f1ea" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href="/src/fonts/shippori-mincho-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/fonts/zen-kaku-gothic-new-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/fonts/shippori-mincho-500-ja.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/src/styles.css" />
 
     <script>
-      // Apply the saved theme before first paint to avoid a flash.
-      try {
-        const t = localStorage.getItem("theme");
-        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
-      } catch (_) {}
-      // Drawings plot themselves only when JS runs and motion is welcome.
-      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        document.documentElement.classList.add("js-plot");
-      }
+      // Before first paint: note that JavaScript runs, whether motion is
+      // welcome, and whether this is the first visit of the session (the
+      // scroll unrolls only then).
+      (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        d.classList.add("motion");
+        try {
+          if (!sessionStorage.getItem("unrolled")) {
+            sessionStorage.setItem("unrolled", "1");
+            d.classList.add("unroll");
+          }
+        } catch (e) {}
+      })();
     </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div id="root"><!--ssr:home--></div>
+    <script type="module" src="/src/page.js"></script>
   </body>
 </html>

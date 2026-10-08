@@ -3,19 +3,22 @@
   "private": true,
   "version": "3.0.0",
   "type": "module",
-  "description": "Personal site of Kaustubh Tripathi, AI Engineer",
+  "description": "Personal site of Kaustubh Tripathi, Software & AI Engineer",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "fonts": "node scripts/subset-fonts.mjs",
+    "cards": "node scripts/capture-cards.mjs"
   },
   "dependencies": {
-    "marked": "^18.0.14",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.1",
+    "marked": "^18.1.0",
+    "subset-font": "^2.9.0",
     "vite": "^7.2.4"
   }
 }
