@@ -1,80 +1,76 @@
-import { StrictMode, useEffect, useRef } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { drawHorizon } from "./art/landscape.js";
-import { profile } from "./data.js";
+import { noteNumber, profile, projects } from "./data.js";
+import { essaySources } from "./lib/essays.js";
 import { parse } from "./lib/frontmatter.js";
 import "./styles.css";
 import "./cards.css";
 
-// The link-preview images in public/og/, one per page, drawn with the footer's
-// horizon. A dev-only page: run `npm run dev`, open /cards.html, and capture
-// each card at 2× (Chrome DevTools: select a .share-card, "Capture node
-// screenshot") as public/og/<id>.png.
-const sources = import.meta.glob("../content/essays/*.md", { query: "?raw", import: "default", eager: true });
-const essays = Object.entries(sources).map(([path, source]) => ({
-  slug: path.match(/([\w-]+)\.md$/)[1],
-  meta: parse(source).meta,
-}));
+// The link-preview images in public/og/, one per page, set as small datasheets.
+// A dev-only page: run `npm run dev`, open /cards.html (or /cards.html?card=home
+// for one card on its own), and capture each 1200×630 card as public/og/<id>.png.
+const essays = Object.entries(essaySources).map(([slug, source]) => ({ slug, meta: parse(source).meta }));
+const domain = profile.site.replace(/^https?:\/\//, "");
 
-function Landscape() {
-  const canvas = useRef(null);
-  useEffect(() => drawHorizon(canvas.current), []);
-  return <canvas ref={canvas} className="card-horizon" aria-hidden="true" />;
-}
-
-function Card({ id, byline, children }) {
+function Card({ id, children }) {
   return (
     <section className="share-card" id={`card-${id}`}>
-      <div className="card-top">
-        <span className="monogram">
-          K<span>·</span>T
-        </span>
-        {byline && <span className="mono">{profile.name}</span>}
-        <span className="mono card-url">{profile.site.replace(/^https?:\/\//, "")}</span>
+      <div className="card-sheet">
+        <p className="card-strip">
+          <span>{profile.name}</span>
+          <span>{domain}</span>
+        </p>
+        {children}
       </div>
-      {children}
-      <Landscape />
     </section>
   );
 }
 
-function Cards() {
+function Home() {
   return (
-    <main className="cards">
-      <Card id="home">
-        <div className="card-home">
-          <h1 className="card-name">
-            <span>{profile.first}</span>
-            <span className="card-last">{profile.last}</span>
-          </h1>
-          <dl className="card-facts">
-            <div>
-              <dt className="mono">Practice</dt>
-              <dd>{profile.role}</dd>
-            </div>
-            <div>
-              <dt className="mono">Based in</dt>
-              <dd>{profile.location}, India</dd>
-            </div>
-            <div>
-              <dt className="mono">Status</dt>
-              <dd>{profile.availability}</dd>
-            </div>
-          </dl>
-        </div>
-      </Card>
+    <Card id="home">
+      <div className="card-row card-title">
+        <h1 className="card-name">{profile.name}</h1>
+        <p className="card-role">
+          {profile.role}
+          <br />
+          {profile.location}
+        </p>
+      </div>
+      <p className="card-row card-lede">{profile.lede}</p>
+      <ol className="card-row card-works">
+        {projects.map((p, i) => (
+          <li key={p.id}>
+            <span>{String(i + 3).padStart(2, "0")}</span> {p.name}
+          </li>
+        ))}
+      </ol>
+    </Card>
+  );
+}
 
-      {essays.map(({ slug, meta }) => (
-        <Card key={slug} id={slug} byline>
-          <div className="card-essay">
-            <p className="mono card-kicker">
-              Essay {meta.number} · {meta.project}
-            </p>
-            <h1 className="card-title">{meta.title}</h1>
-            <p className="card-sub">{meta.subtitle}</p>
-          </div>
-        </Card>
-      ))}
+function Essay({ slug, meta }) {
+  return (
+    <Card id={slug}>
+      <div className="card-row card-essay">
+        <p className="card-label">
+          <span>{noteNumber(slug)}</span>
+          <span>Application note · {meta.project}</span>
+        </p>
+        <h1 className="card-essay-title">{meta.title}</h1>
+        <p className="card-sub">{meta.subtitle}</p>
+      </div>
+    </Card>
+  );
+}
+
+function Cards() {
+  const only = new URLSearchParams(window.location.search).get("card");
+  const show = (id) => !only || only === id;
+  return (
+    <main className={`cards${only ? " cards--one" : ""}`}>
+      {show("home") && <Home />}
+      {essays.filter((e) => show(e.slug)).map((e) => <Essay key={e.slug} {...e} />)}
     </main>
   );
 }

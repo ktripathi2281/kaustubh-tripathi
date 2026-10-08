@@ -1,4 +1,5 @@
-// All site content lives here. Facts are sourced from the résumé (public/resume.pdf).
+// All site content lives here. Facts are sourced from the résumé (public/resume.pdf)
+// and, for each project, its repository's README.
 
 export const profile = {
   name: "Kaustubh Tripathi",
@@ -18,32 +19,30 @@ export const profile = {
   lede: "I build dependable software, including language-model systems that hold their shape when the model doesn't.",
 };
 
-export const frontispiece = {
-  plate: "Plate 0",
-  title: "Model, contained",
-  caption:
-    "A single line wanders for 4,000 random steps and never leaves its boundary. The red line is the only way out, through a gate. This is how I build with AI.",
-  hint: "Hover over or tap any part of a drawing to read it.",
-};
-
 export const statement = {
   pull: "The model is the least reliable part of the system. Everything I build around it is designed to hold.",
   body: [
     "I am a software engineer first. At Tata Consultancy Services I work on Java and Spring Boot services for a banking product, where the job is keeping legacy systems fast, correct and debuggable in production. Lately I’ve been bringing the same instincts to language models.",
-    "In practice that means typed, schema-validated outputs, guardrails that reject answers contradicting what a user has already confirmed, a deterministic fallback behind every model route, and a log entry for every decision an agent makes. The drawings on this page are made the same way: generated in code, but held inside rules.",
+    "In practice that means typed, schema-validated outputs, guardrails that reject answers contradicting what a user has already confirmed, a deterministic fallback behind every model route, and a log entry for every decision an agent makes.",
   ],
 };
 
+// Each project renders as one datasheet section, in this order.
+// `meta` rows become the Parameters table. `diagram` drives the block diagram:
+// `steps` run in order (a string, or { label, note, link: "both", loop, accent }),
+// a step with `split` branches into parallel rows, and `rail` runs under the
+// whole flow. Exactly one element per diagram is the accent.
 export const projects = [
   {
     id: "kavach",
-    plate: "I",
     name: "Kavach",
     kicker: "AI cybercrime support platform",
     meta: [
       ["Context", "Build What Moves India Hackathon, 2-person team"],
-      ["Medium", "GPT-5, GPT-5-mini, GPT-4o-transcribe; Next.js, TypeScript, Supabase, IndexedDB"],
-      ["Dimensions", "6 model routes · 22 languages · 10 action steps"],
+      ["Stack", "GPT-5, GPT-5-mini, GPT-4o-transcribe; Next.js, TypeScript, Supabase, IndexedDB"],
+      ["Model routes", "6"],
+      ["Languages", "22"],
+      ["Action steps", "10"],
     ],
     description:
       "Reporting cybercrime in India means dealing with several portals, helplines and banks, each with its own deadlines. Kavach replaces all of that with a single case file of ten ordered, deadline-tracked steps, in any of the 22 scheduled Indian languages, by voice or text.",
@@ -52,8 +51,22 @@ export const projects = [
       "Hybrid regex + LLM extraction of transaction IDs (UTRs), phone numbers and UPI IDs.",
       "A contradiction guardrail throws out any draft that conflicts with facts the citizen has confirmed.",
     ],
-    drawing:
-      "Six lines, one per model route, converge into one case file of ten steps. The red line is the rules engine, running alongside the whole way so the app still works with no API key.",
+    breaks:
+      "The model drafts something that contradicts what the citizen confirmed, or no model is reachable at all.",
+    holds:
+      "A contradiction guardrail throws the draft out, and a rules engine runs alongside so the app still works with no API key.",
+    diagram: {
+      steps: [
+        "voice or text",
+        "triage",
+        "regex + LLM extraction",
+        "citizen confirms",
+        "draft",
+        "contradiction guardrail",
+        { label: "case file", note: "10 steps" },
+      ],
+      rail: "rules engine · works with no API key",
+    },
     links: [
       { label: "Essay", href: "/essays/kavach/", internal: true },
       { label: "Visit", href: "https://cybercrime-assistant.vercel.app" },
@@ -61,14 +74,82 @@ export const projects = [
     ],
   },
   {
+    id: "deepresearch",
+    name: "DeepResearch",
+    kicker: "Local-first research system with verified citations",
+    meta: [
+      ["Stack", "Python, FastAPI; Next.js, TypeScript; PostgreSQL + pgvector; Ollama qwen3:4b"],
+      ["Answer outcomes", "4"],
+      ["Agent tools", "3, read-only"],
+      ["Tests", "429 backend + 46 frontend"],
+    ],
+    description:
+      "Investigates complex questions across a document corpus and returns evidence-backed answers with citations, running locally with no paid APIs. It retrieves with vector and keyword search, answers only from that evidence, verifies each cited claim, and says so explicitly when evidence is missing or sources conflict.",
+    notes: [
+      "Hybrid retrieval: pgvector plus BM25, fused with Reciprocal Rank Fusion, then a local cross-encoder reranker (top 20 to top 5).",
+      "A bounded agent: 8 iterations, 12 tool calls, 60 seconds, read-only tools only.",
+      "An adversarial test suite covering prompt injection, tool abuse, malformed output and log leakage.",
+    ],
+    breaks: "The evidence does not support an answer, or two sources disagree.",
+    holds:
+      "It abstains or flags the conflict instead of inventing an answer, and an empty verifier response fails the job closed.",
+    diagram: {
+      steps: [
+        "question",
+        "hybrid retrieval",
+        "rerank",
+        "grounded answer",
+        "cite",
+        "verify",
+        {
+          label: "outcome",
+          split: [["answered"], [{ label: "insufficient or conflicting evidence → say so", accent: true }]],
+        },
+      ],
+    },
+    links: [{ label: "Source", href: "https://github.com/ktripathi2281/DeepResearch" }],
+  },
+  {
+    id: "loopdetector",
+    name: "Loop Detector",
+    kicker: "Claude Code mod that catches agent loops",
+    meta: [
+      ["Stack", "TypeScript; Claude Code Mods API (function hooks)"],
+      ["Signals", "7"],
+      ["Score bands", "3"],
+      ["Actions", "4"],
+    ],
+    description:
+      "A Claude Code mod that notices when Claude is stuck repeating the same approach and helps it out before it burns time and tokens. Detection is deterministic: plain heuristics over the tool calls Claude makes and what they return, with no model calls and no network.",
+    notes: [
+      "Seven signals, each scored 0 to 100, combine into one loop score; repetition by itself tops out at 25.",
+      "A loop warns once, and again only when its band rises, its repetitions double, or it returns after 15 quiet tool calls.",
+      "Nothing stops Claude on its own: every intervention is a button the user presses.",
+    ],
+    breaks: "A coding agent repeats the same edit, test, failure cycle and makes no progress.",
+    holds:
+      "Deterministic heuristics flag the loop and a Rethink prompt asks Claude for a different approach. Nothing reaches Claude without the user pressing a button.",
+    diagram: {
+      steps: [
+        "tool call",
+        "record",
+        "seven signals",
+        "loop score",
+        "warning card",
+        { label: "Rethink · the user presses the button", accent: true },
+      ],
+    },
+    links: [{ label: "Source", href: "https://github.com/ktripathi2281/LoopDetector" }],
+  },
+  {
     id: "leetcode",
-    plate: "II",
     name: "LeetCode Agent Tracker",
     kicker: "Autonomous interview-prep platform",
     meta: [
-      ["Context", "Independent project"],
-      ["Medium", "Google Gemini function calling; React, Express, MongoDB"],
-      ["Dimensions", "3 agents · 4 tools · up to 8 iterations"],
+      ["Stack", "Google Gemini function calling; React, Express, MongoDB"],
+      ["Agents", "3"],
+      ["Tools", "4"],
+      ["Iterations", "Up to 8"],
     ],
     description:
       "An interview-prep platform with three agents: a planner that builds each week's study plan on its own, a Socratic tutor that hints instead of answering, and a post-mortem reviewer that flags suboptimal complexity in solved code.",
@@ -77,45 +158,45 @@ export const projects = [
       "Leitner-style spaced repetition, topic heatmaps and company-readiness analytics.",
       "Every call is logged with its tool calls, reasoning trace and latency.",
     ],
-    drawing:
-      "Each loop is one iteration of the planning agent, reaching out to one of its four tools and returning. The red line is the audit log, with one mark per iteration.",
+    breaks: "A planning agent left to act on its own drifts, loops, or does something nobody can review.",
+    holds:
+      "It can act only through four database tools, stops at eight iterations, and every call is logged with its tool calls, reasoning trace and latency.",
+    diagram: {
+      steps: [
+        "planner",
+        { label: "4 read-only database tools", link: "both", loop: "up to 8 iterations" },
+        "plan checked: shape, then facts",
+        "weekly plan",
+      ],
+      rail: "audit log · one entry per run",
+    },
     links: [
       { label: "Essay", href: "/essays/leetcode/", internal: true },
       { label: "Source", href: "https://github.com/ktripathi2281/LeetCode-Tracker" },
     ],
   },
   {
-    id: "skillbarter",
-    plate: "III",
-    name: "Skill Barter",
-    kicker: "Peer-to-peer skill exchange",
-    meta: [
-      ["Context", "Independent project"],
-      ["Medium", "MongoDB 2dsphere, Socket.io, JWT; React, Express"],
-      ["Dimensions", "Mutual & one-way matches, ranked by distance"],
-    ],
+    id: "tollgate",
+    name: "Tollgate",
+    kicker: "LLM gateway in Go with spend control · in progress",
+    status: "In progress",
+    meta: [["Stack", "Go; OpenAI-compatible API"]],
+    // Only what docs/PROGRESS.md marks as built (milestones M0 and M1).
     description:
-      "A place to trade skills without money. It solves the double coincidence of wants: you teach what I want to learn, I teach what you want. Matches are ranked by distance, and every trade needs both people to agree.",
-    notes: [
-      "Real-time chat and a trade lifecycle that requires consent from both sides.",
-      "Dual-token JWT with silent renewal, OTP email verification, rate limiting and CORS whitelisting.",
-    ],
-    drawing:
-      "Lens shapes are mutual matches and single arcs are one-way interest. The rings measure distance from you, and your nearest mutual match is drawn in red.",
-    links: [
-      { label: "Visit", href: "https://skill-barter-psi.vercel.app/" },
-      { label: "Source", href: "https://github.com/ktripathi2281/Skill-Barter" },
-    ],
+      "An OpenAI-compatible LLM gateway in Go, designed for payments-grade spend control. Built so far: non-streaming chat completions and a model list through a mock provider, strict request validation, model aliases and prices in config, request IDs, an access log, panic recovery, and an in-flight cap that sheds excess requests with a 503.",
+    breaks: "A retried request is charged twice, or a key spends past its budget.",
+    holds:
+      "The design holds budgets before the call and settles them after it in integer micro-USD, with idempotency keys and a reconcile command. This part is planned, not yet built.",
+    links: [{ label: "Source", href: "https://github.com/ktripathi2281/Tollgate" }],
   },
   {
     id: "rideradar",
-    plate: "IV",
     name: "Ride Radar",
     kicker: "Real-time group trip tracker",
     meta: [
-      ["Context", "Independent project"],
-      ["Medium", "Socket.io, React Leaflet, OpenStreetMap; Express, MongoDB"],
-      ["Dimensions", "Per-trip rooms · 1,000-point trails"],
+      ["Stack", "Socket.io, React Leaflet, OpenStreetMap; Express, MongoDB"],
+      ["Rooms", "One per trip"],
+      ["Trails", "1,000 points per rider"],
     ],
     description:
       "A live map for groups riding together. Each rider's position, battery level and SOS alerts reach everyone in the group in real time, and a rider who loses signal fades to their last known position instead of disappearing.",
@@ -123,11 +204,49 @@ export const projects = [
       "JWT is checked at the socket handshake, and every event stays inside its trip's room.",
       "Location trails are capped at 1,000 points per rider, so history stays a constant size.",
     ],
-    drawing:
-      "Five riders make their way to a shared checkpoint across a map grid. One stops, and the group sees it at once.",
+    breaks: "A rider loses signal in the middle of a trip.",
+    holds:
+      "They fade to their last known position instead of disappearing, and trails are capped at 1,000 points so history stays a constant size.",
+    diagram: {
+      steps: [
+        "rider",
+        "JWT at socket handshake",
+        "trip room",
+        "group map",
+        { label: "signal lost → last known position", accent: true },
+      ],
+    },
     links: [
       { label: "Visit", href: "https://ride-radar-sand.vercel.app/" },
       { label: "Source", href: "https://github.com/ktripathi2281/RideRadar" },
+    ],
+  },
+  {
+    id: "skillbarter",
+    name: "Skill Barter",
+    kicker: "Peer-to-peer skill exchange",
+    meta: [
+      ["Stack", "MongoDB 2dsphere, Socket.io, JWT; React, Express"],
+      ["Matches", "Mutual & one-way, ranked by distance"],
+    ],
+    description:
+      "A place to trade skills without money. It solves the double coincidence of wants: you teach what I want to learn, I teach what you want. Matches are ranked by distance, and every trade needs both people to agree.",
+    notes: [
+      "Real-time chat and a trade lifecycle that requires consent from both sides.",
+      "Dual-token JWT with silent renewal, OTP email verification, rate limiting and CORS whitelisting.",
+    ],
+    breaks: "A match that only works for one side.",
+    holds: "Every trade needs both people to agree before it moves forward.",
+    diagram: {
+      steps: [
+        "you",
+        { label: "match", link: "both", note: "ranked by distance" },
+        { split: [["mutual match", { label: "both agree → trade", accent: true }], ["one-way interest"]] },
+      ],
+    },
+    links: [
+      { label: "Visit", href: "https://skill-barter-psi.vercel.app/" },
+      { label: "Source", href: "https://github.com/ktripathi2281/Skill-Barter" },
     ],
   },
 ];
@@ -138,7 +257,6 @@ export const certificates = {
   items: [
     {
       id: "architect",
-      numeral: "I",
       title: "Claude Certified Architect",
       level: "Foundations",
       description:
@@ -147,14 +265,9 @@ export const certificates = {
       validThrough: "September 2027",
       covers: "AI system design, multi-agent orchestration, context management, tool & MCP design, production reliability",
       href: "https://www.credly.com/badges/2bfa241d-e6f9-4330-8f23-37c70505c45a/public_url",
-      badge: "/images/badges/claude-architect.png",
-      inscription: "Claude Certified Architect · Foundations · MMXXVI · ",
-      // An even, regular lattice: structure first.
-      pattern: { r0: 76, amp: 12, waves: 16, copies: 5 },
     },
     {
       id: "developer",
-      numeral: "II",
       title: "Claude Certified Developer",
       level: "Foundations",
       description:
@@ -163,10 +276,6 @@ export const certificates = {
       validThrough: "September 2027",
       covers: "Agent development, Claude API integration, MCP server development, evals & debugging, application security",
       href: "https://www.credly.com/badges/2e1ecb88-4f11-4f3c-b7cf-a10251856c05/public_url",
-      badge: "/images/badges/claude-developer.png",
-      inscription: "Claude Certified Developer · Foundations · MMXXVI · ",
-      // A looser weave with a slow swell running through it.
-      pattern: { r0: 76, amp: 10, waves: 13, copies: 7, amp2: 4, waves2: 5 },
     },
   ],
 };
@@ -193,16 +302,19 @@ export const chronology = [
 ];
 
 export const materials = [
-  ["Models", "OpenAI GPT-5 family, Google Gemini"],
+  ["Models", "OpenAI GPT-5 family, Google Gemini, Ollama (local models)"],
   ["Methods", "Tool calling, agentic workflows, structured outputs, multi-model routing, guardrails, fallbacks, audit logging"],
-  ["Languages", "Java, TypeScript, JavaScript, SQL, C++"],
-  ["Frameworks", "Spring Boot, Spring Security, Node.js, Express, React, Next.js"],
-  ["Data", "PostgreSQL, MongoDB, Redis, MySQL, Supabase"],
+  ["Languages", "Java, TypeScript, JavaScript, Python, Go, SQL, C++"],
+  ["Frameworks", "Spring Boot, Spring Security, Node.js, Express, React, Next.js, FastAPI"],
+  ["Data", "PostgreSQL, pgvector, MongoDB, Redis, MySQL, Supabase"],
   ["Tools", "Docker, GitHub Actions, Jenkins, Git, Linux, Vitest"],
 ];
 
-// The essays, for the footer's Reading column (titles match content/essays/*.md).
+// The essays, listed as application notes (titles match content/essays/*.md).
 export const essays = [
   { slug: "kavach", title: "Confidently wrong" },
   { slug: "leetcode", title: "Show your work" },
 ];
+
+// "AN-01" for the first essay, and so on.
+export const noteNumber = (slug) => `AN-${String(essays.findIndex((e) => e.slug === slug) + 1).padStart(2, "0")}`;
