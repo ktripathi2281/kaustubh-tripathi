@@ -32,16 +32,16 @@
     <script>
       // Before first paint: note that JavaScript runs, whether motion is
       // welcome, and whether this is the first visit of the session (the
-      // scroll unrolls only then).
+      // opening plays only then).
       (function () {
         var d = document.documentElement;
         d.classList.add("js");
         if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         d.classList.add("motion");
         try {
-          if (!sessionStorage.getItem("unrolled")) {
-            sessionStorage.setItem("unrolled", "1");
-            d.classList.add("unroll");
+          if (!sessionStorage.getItem("opened")) {
+            sessionStorage.setItem("opened", "1");
+            d.classList.add("intro-on");
           }
         } catch (e) {}
       })();

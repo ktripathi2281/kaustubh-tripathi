@@ -17,6 +17,20 @@ const ALIASES = { top: "opening", plates: "kavach", statement: "about", certific
 const alias = ALIASES[decodeURIComponent(location.hash.slice(1))];
 if (alias) document.getElementById(alias)?.scrollIntoView();
 
+// The opening (components/Intro.jsx) plays on its own, in CSS. Any touch,
+// key or scroll skips it.
+if (root.classList.contains("intro-on")) {
+  const events = ["pointerdown", "keydown", "wheel", "touchstart"];
+  const skip = () => {
+    root.classList.add("intro-skip");
+    events.forEach((e) => removeEventListener(e, skip, true));
+  };
+  events.forEach((e) => addEventListener(e, skip, { capture: true, passive: true }));
+  document.querySelector(".intro-sheet")?.addEventListener("animationend", (e) => {
+    if (e.target === e.currentTarget) events.forEach((ev) => removeEventListener(ev, skip, true));
+  });
+}
+
 // The ink line, re-plotted in pixels at the screen's real size. As rendered,
 // each horizon is stretched to fit, which keeps its stroke even but means its
 // length can't be measured: browsers lay out dashes in screen pixels but

@@ -10,6 +10,11 @@ The big titles turn to katakana: on hover with a mouse, or once as each scene ar
 Japanese string on the site is in [`src/ja.js`](src/ja.js) and is either decorative or shown beside its
 English.
 
+On the first visit of a session, the page opens with
+[`src/components/Intro.jsx`](src/components/Intro.jsx): a drop of ink blooms into rings, as in suminagashi,
+the name is written in katakana stroke by stroke, the seal is pressed red, and the paper lifts away. It is
+pure CSS animation, skipped by any touch, key or scroll, and never shown when motion is turned off.
+
 React 19 + Vite, plain CSS, no UI or animation libraries. Every page is rendered to static HTML at build
 time, so it reads in full without JavaScript; the main page then hydrates.
 
@@ -39,3 +44,11 @@ npm run cards    # recapture public/og/*.png (needs the dev server and Chrome or
 ```
 
 Deploys to Vercel as a standard Vite project.
+
+## Credits
+
+- The katakana stroke paths in [`src/lib/strokes.js`](src/lib/strokes.js) are adapted from
+  [KanjiVG](https://kanjivg.tagaini.net), copyright Ulrich Apel, under
+  [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/); that file is shared under the same licence.
+- Shippori Mincho and Zen Kaku Gothic New are under the SIL Open Font License; see
+  [`src/fonts/`](src/fonts/).

@@ -1,5 +1,6 @@
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
+import Intro, { REVEAL } from "./components/Intro.jsx";
 import { Horizon } from "./components/InkLine.jsx";
 import { NumeralSeal, Title, VerticalLabel } from "./components/marks.jsx";
 import { certificates, chronology, profile, projects } from "./data.js";
@@ -15,7 +16,13 @@ function Ext({ href, children }) {
 
 function Opening() {
   return (
-    <section className="scene scene--opening" id="opening" tabIndex={-1} aria-labelledby="name">
+    <section
+      className="scene scene--opening"
+      id="opening"
+      tabIndex={-1}
+      aria-labelledby="name"
+      style={{ "--intro-reveal": `${REVEAL}ms` }}
+    >
       <div className="above reveal">
         <div className="head">
           <VerticalLabel text={ja.works} />
@@ -143,7 +150,7 @@ export default function App() {
         <Background />
       </main>
       <Footer />
-      <div className="unroll-cover" aria-hidden="true" />
+      <Intro />
     </>
   );
 }

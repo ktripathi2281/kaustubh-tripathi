@@ -505,9 +505,12 @@ a:hover {
     opacity: 0;
   }
 
-  .unroll .scene--opening .bi-ja,
-  .unroll .scene--opening .bi-en {
-    animation-delay: 700ms;
+  /* After the opening, which has just shown the name in katakana, the title
+     makes its turn quicker. */
+  .intro-on .scene--opening .bi-ja,
+  .intro-on .scene--opening .bi-en {
+    animation-delay: var(--intro-reveal);
+    animation-duration: 1500ms;
   }
 }
 
@@ -630,8 +633,8 @@ a:hover {
     animation: ink-draw 1600ms cubic-bezier(0.45, 0, 0.2, 1) 200ms both;
   }
 
-  .unroll .scene--opening .ink[data-px] path {
-    animation-delay: 900ms;
+  .intro-on .scene--opening .ink[data-px] path {
+    animation-delay: calc(var(--intro-reveal) + 300ms);
   }
 
   @supports (animation-timeline: view()) {
@@ -659,16 +662,6 @@ a:hover {
 /* Motion: slow, eased, played once                                    */
 /* ------------------------------------------------------------------ */
 
-.unroll-cover {
-  display: none;
-}
-
-@keyframes unroll {
-  to {
-    transform: translateY(101%);
-  }
-}
-
 @keyframes appear {
   from {
     opacity: 0;
@@ -680,21 +673,8 @@ a:hover {
     scroll-behavior: smooth;
   }
 
-  /* The first visit of a session: the page unrolls from the top, like a
-     hanging scroll let down. */
-  .unroll .unroll-cover {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    background: var(--paper);
-    border-top: 1px solid var(--hair);
-    pointer-events: none;
-    animation: unroll 900ms cubic-bezier(0.65, 0, 0.25, 1) 150ms both;
-  }
-
-  /* Later visits: the opening simply fades in. */
-  .motion:not(.unroll) .scene--opening .reveal {
+  /* Later visits, without the opening (below): the first scene fades in. */
+  .motion:not(.intro-on) .scene--opening .reveal {
     animation: appear 500ms ease both;
   }
 
@@ -717,6 +697,247 @@ a:hover {
   .motion .scene:not(.is-here) .seal {
     opacity: 0;
     scale: 1.12;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* The opening: ink drop, rings, the name written, the seal pressed    */
+/* ------------------------------------------------------------------ */
+
+/* Timed in components/Intro.jsx, which sets each delay inline. Shown only on
+   the first visit of a session, with motion welcome (index.html adds
+   .intro-on before first paint). */
+.intro {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The sheet takes touches while it shows; once it lifts, they pass through. */
+  .intro-on .intro {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    transition:
+      opacity 300ms ease,
+      visibility 0s linear 300ms;
+  }
+
+  .intro-sheet {
+    pointer-events: auto;
+  }
+
+  /* Skipped by a touch, key or scroll (src/page.js): the sheet fades at once,
+     and the first scene's line and title start without waiting for it. */
+  .intro-skip .intro {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .intro-skip .intro-sheet {
+    pointer-events: none;
+  }
+
+  .intro-on.intro-skip .scene--opening .ink[data-px] path,
+  .intro-on.intro-skip .scene--opening .bi-ja,
+  .intro-on.intro-skip .scene--opening .bi-en {
+    animation-delay: 300ms;
+  }
+}
+
+.intro-sheet {
+  --u: clamp(170px, 44vmin, 330px); /* the seal's height */
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: var(--paper);
+  background-image: var(--fibre);
+  animation: intro-lift 650ms ease calc(var(--reveal) + 200ms) both;
+}
+
+/* Where the ink falls: in the empty paper to the right of the opening's
+   text, as a painter's seal sits to one side of the picture. */
+.intro-bloom {
+  position: absolute;
+  left: 60vw;
+  top: 45vh;
+  top: 45svh;
+  animation: intro-spread 600ms ease var(--reveal) both;
+}
+
+@media (min-width: 768px) {
+  .intro-bloom {
+    left: 71vw;
+    top: 47vh;
+    top: 47svh;
+  }
+}
+
+.intro-ring,
+.intro-drop,
+.intro-seal {
+  position: absolute;
+  overflow: visible;
+}
+
+/* Each ring grows from the drop and drifts a little as it settles. */
+.intro-ring {
+  left: calc(var(--r) * var(--u) * -1.1);
+  top: calc(var(--r) * var(--u) * -1.1);
+  width: calc(var(--r) * var(--u) * 2.2);
+  height: calc(var(--r) * var(--u) * 2.2);
+  opacity: 0;
+  animation-name: intro-ring;
+  animation-timing-function: cubic-bezier(0.12, 0.7, 0.25, 1);
+  animation-fill-mode: both;
+}
+
+.intro-ring path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: calc(var(--w) * 1px);
+  vector-effect: non-scaling-stroke;
+}
+
+.intro-drop {
+  left: -7px;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  fill: var(--ink);
+  animation:
+    intro-fall 380ms cubic-bezier(0.55, 0, 0.9, 0.4) var(--drop) both,
+    intro-soak 500ms ease-out calc(var(--drop) + 380ms) forwards;
+}
+
+.intro-seal {
+  height: var(--u);
+  width: calc(var(--u) * 276 / 361);
+  left: calc(var(--u) * -138 / 361);
+  top: calc(var(--u) * -0.5);
+}
+
+.intro-outline {
+  fill: none;
+  stroke: var(--ink);
+  stroke-opacity: 0.35;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+  animation:
+    appear 400ms ease 560ms both,
+    intro-off 120ms ease var(--stamp) forwards;
+}
+
+/* The seal is pressed: red under the writing, the writing turned to paper. */
+.intro-red {
+  fill: var(--seal);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: intro-press 260ms cubic-bezier(0.3, 1.5, 0.5, 1) var(--stamp) both;
+}
+
+.intro-ink path,
+.intro-paper path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.intro-ink path {
+  stroke: var(--ink);
+  stroke-width: 6.5;
+  stroke-dasharray: 1 1;
+  animation-name: intro-write;
+  animation-timing-function: cubic-bezier(0.35, 0, 0.45, 1);
+  animation-fill-mode: both;
+}
+
+.intro-ink {
+  animation: intro-off 140ms ease var(--stamp) forwards;
+}
+
+.intro-paper path {
+  stroke: var(--paper);
+  stroke-width: 7.5;
+}
+
+.intro-paper {
+  animation: appear 140ms ease var(--stamp) both;
+}
+
+@keyframes intro-fall {
+  from {
+    opacity: 0;
+    transform: translateY(-38vh) scale(0.7);
+  }
+  20% {
+    opacity: 1;
+  }
+}
+
+@keyframes intro-soak {
+  to {
+    opacity: 0;
+    transform: scale(4);
+  }
+}
+
+@keyframes intro-ring {
+  from {
+    opacity: 0;
+    scale: 0.06;
+  }
+  12% {
+    opacity: var(--tone);
+  }
+  to {
+    opacity: var(--tone);
+    scale: 1;
+    rotate: var(--turn);
+    translate: calc(var(--dx) * var(--u)) calc(var(--dy) * var(--u));
+  }
+}
+
+@keyframes intro-write {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes intro-press {
+  from {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes intro-off {
+  to {
+    opacity: 0;
+  }
+}
+
+/* The paper lifts: the sheet fades as the ink spreads a little further. */
+@keyframes intro-lift {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* The ink lifts first, spreading a little as it goes; then the paper. */
+@keyframes intro-spread {
+  to {
+    opacity: 0;
+    transform: scale(1.06);
   }
 }
 
