@@ -1,10 +1,11 @@
 # Kaustubh Tripathi · Selected Works
 
-A portfolio set out like a hanging scroll. Warm paper, soft black ink, and one red, used only on seals. Each
-project is a scene. A single ink line runs across each scene like a horizon, level under its text and rising
-like a distant ridge beyond it. Read down the page, it wraps from scene to scene like a line of writing. The
-line draws itself as each scene scrolls into view and ends, at the foot of the page, at a seal bearing the
-name in katakana, above layers of stippled ridges.
+A portfolio set out like a hanging scroll. Warm paper, soft black ink, and one red, kept for the seals and
+the setting sun. Each project is a scene. A single ink line runs across each scene like a horizon, level
+under its text and rising like a distant ridge beyond it. Read down the page, it wraps from scene to scene
+like a line of writing. The line draws itself as each scene scrolls into view and ends, at the foot of the
+page, at a seal bearing the name in katakana, above layers of stippled ridges, where cherry trees blossom
+and the sun sets behind the hills as the page ends.
 
 The big titles turn to katakana: on hover with a mouse, or once as each scene arrives on a phone. Every
 Japanese string on the site is in [`src/ja.js`](src/ja.js) and is either decorative or shown beside its
@@ -25,7 +26,9 @@ motion and sends the letter.
 - **The ink line:** [`src/lib/ridge.js`](src/lib/ridge.js). It is seeded, so every visit draws the same
   line. [`InkLine.jsx`](src/components/InkLine.jsx) re-plots it in pixels once the page runs, so the stroke can
   be drawn as a fraction of its length.
-- **The ridges:** [`src/lib/stipple.js`](src/lib/stipple.js), an ordered dither on a canvas.
+- **The ridges:** [`src/lib/stipple.js`](src/lib/stipple.js), an ordered dither on a canvas, with cherry
+  trees in blossom grown from a seed. The sun is stippled on a canvas of its own, clipped to the sky above
+  the hills, and sinks behind them as they rise into view.
 - **The diagrams:** [`src/components/Diagrams.jsx`](src/components/Diagrams.jsx), one ink drawing per project of
   how it works, built from its README or the résumé. Each draws itself as its scene arrives.
 - **The plates:** [`src/components/Plates.jsx`](src/components/Plates.jsx), a large drawing behind each

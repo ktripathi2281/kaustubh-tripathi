@@ -94,8 +94,12 @@ export default function Footer({ home = true }) {
         <Horizon seed={2281} end={END}>
           <NameSeal />
         </Horizon>
+        {/* The sun sets behind the hills, under cherry trees in blossom. */}
         <div className="ridges" aria-hidden="true">
-          <canvas />
+          <div className="ridges-sky">
+            <canvas className="ridges-sun" />
+          </div>
+          <canvas className="ridges-land" />
         </div>
       </div>
     </footer>

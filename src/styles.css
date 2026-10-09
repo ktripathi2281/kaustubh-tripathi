@@ -897,6 +897,8 @@ a:hover {
 /* Set as a plain block: a grid would give the vertical text no column
    height, and every character would start a column of its own. */
 .seal--name {
+  /* Above the trees and the sun, which rise behind it. */
+  z-index: 1;
   display: block;
   left: var(--end);
   white-space: nowrap;
@@ -1008,6 +1010,24 @@ a:hover {
       animation-timeline: scroll(root block);
       animation-range: calc(100% - 70vh) 100%;
     }
+
+    /* The sun sets as the hills rise into view, and rests behind them as the
+       page ends. lib/stipple.js sets how far above rest it starts (--rise). */
+    .motion .ridges {
+      view-timeline: --hills block;
+    }
+
+    .motion .ridges-sun {
+      animation: sun-set linear both;
+      animation-timeline: --hills;
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+
+@keyframes sun-set {
+  from {
+    transform: translateY(calc(-1 * var(--rise, 0px)));
   }
 }
 
@@ -1473,6 +1493,21 @@ a:hover {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* The setting sun is drawn beneath the hills and the trees, on a sky clipped
+   to the hills' outline (lib/stipple.js), so whatever has set is hidden. */
+.ridges {
+  position: relative;
+}
+
+.ridges-sky {
+  position: absolute;
+  inset: 0;
+}
+
+.ridges-land {
+  position: relative;
 }
 
 @media (prefers-reduced-motion: no-preference) {

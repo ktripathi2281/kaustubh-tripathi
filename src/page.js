@@ -50,15 +50,19 @@ const lines = new ResizeObserver((entries) => {
 });
 document.querySelectorAll(".ink[data-seed]").forEach((svg) => lines.observe(svg));
 
-// The ridges at the foot of the page, drawn again whenever their width changes.
-for (const canvas of document.querySelectorAll(".ridges canvas")) {
+// The ridges at the foot of the page, with their trees and setting sun, drawn
+// again whenever their width changes.
+for (const ridges of document.querySelectorAll(".ridges")) {
+  const land = ridges.querySelector(".ridges-land");
+  const sun = ridges.querySelector(".ridges-sun");
   let width = 0;
   new ResizeObserver(() => {
-    if (canvas.clientWidth === width) return;
-    width = canvas.clientWidth;
-    drawRidges(canvas);
-    canvas.parentElement.classList.add("is-drawn");
-  }).observe(canvas);
+    if (land.clientWidth === width) return;
+    width = land.clientWidth;
+    drawRidges(land, { sun, sakura: true });
+    ridges.classList.add("is-drawn");
+    if (byScroll) onScroll();
+  }).observe(land);
 }
 
 // A scene arrives when a third of it is in view, or when it fills a third of
@@ -93,8 +97,15 @@ function draw() {
     svg.firstChild.style.strokeDashoffset = String(1 - clamp(cover / 0.42));
   }
   const end = root.scrollHeight - innerHeight;
+  const last = clamp((scrollY - (end - 0.7 * innerHeight)) / (0.7 * innerHeight));
   for (const svg of document.querySelectorAll(".site-footer .ink[data-px]")) {
-    svg.firstChild.style.strokeDashoffset = String(1 - clamp((scrollY - (end - 0.7 * innerHeight)) / (0.7 * innerHeight)));
+    svg.firstChild.style.strokeDashoffset = String(1 - last);
+  }
+  // The sun sets as the hills rise into view, to rest as the page ends.
+  for (const sun of document.querySelectorAll(".ridges-sun")) {
+    const hills = sun.closest(".ridges").getBoundingClientRect();
+    const risen = clamp((innerHeight - hills.top) / hills.height);
+    sun.style.transform = `translateY(${-(1 - risen) * (parseFloat(sun.style.getPropertyValue("--rise")) || 0)}px)`;
   }
 }
 function onScroll() {
