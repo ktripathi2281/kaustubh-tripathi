@@ -3,18 +3,15 @@ import { ja } from "../ja.js";
 
 const TOPICS = ["A role", "A collaboration", "A conversation"];
 
-// A letter to Kaustubh, written on the page. Web3Forms delivers it to the
-// inbox behind the public key in data.js. With JavaScript, src/page.js sends
-// it in place and shows the reply; without, the form posts as an ordinary
-// form and Web3Forms returns the visitor to /#sent, which shows the note.
+// A letter to Kaustubh, written on the page and delivered by Web3Forms to the
+// inbox behind the public key in data.js. It goes by way of the site's own
+// relay, api/letter.js, since some networks can't reach Web3Forms directly.
+// With JavaScript, src/page.js sends it in place (and has fallbacks); without,
+// the form posts to the relay, which returns the visitor to /#sent or /#unsent.
 export default function Letter() {
   return (
     <>
-      <form className="letter" action="https://api.web3forms.com/submit" method="POST" aria-labelledby="letter-title" data-letter>
-        <input type="hidden" name="access_key" value={profile.letterKey} />
-        <input type="hidden" name="subject" value="A letter from your portfolio" />
-        <input type="hidden" name="from_name" value={profile.site.replace(/^https?:\/\//, "")} />
-        <input type="hidden" name="redirect" value={`${profile.site}/#sent`} />
+      <form className="letter" action="/api/letter" method="POST" aria-labelledby="letter-title" data-letter data-key={profile.letterKey} data-to={profile.email}>
         {/* Bots fill in the hidden box; people never see it. */}
         <input type="checkbox" name="botcheck" className="letter-trap" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
@@ -80,9 +77,12 @@ export default function Letter() {
         </div>
       </form>
 
-      {/* Without JavaScript, Web3Forms returns the visitor here. */}
+      {/* Without JavaScript, the relay returns the visitor to one of these. */}
       <p className="letter-sent" id="sent">
         Sealed and sent. Thank you; I’ll write back soon.
+      </p>
+      <p className="letter-sent" id="unsent">
+        The letter couldn’t be sent just now. Please write to me at <a href={`mailto:${profile.email}`}>{profile.email}</a>.
       </p>
     </>
   );

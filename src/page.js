@@ -105,9 +105,23 @@ if (byScroll) {
   addEventListener("resize", onScroll);
 }
 
-// The letter in the footer (components/Letter.jsx), sent in place through
-// Web3Forms. If it can't be sent, the words stay where they were written.
+// The letter in the footer (components/Letter.jsx), sent in place. It goes
+// first by the site's own relay (api/letter.js), then straight to Web3Forms;
+// each try gives up after 12 seconds. If neither gets through, the letter is
+// offered to the visitor's own mail app, already written.
 const letter = document.querySelector("form[data-letter]");
+
+async function post(url, body) {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(12000),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || !json.success) throw new Error(json.message || `HTTP ${res.status}`);
+}
+
 letter?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = new FormData(letter);
@@ -115,7 +129,8 @@ letter?.addEventListener("submit", async (e) => {
   const send = letter.querySelector(".letter-send");
   const name = String(form.get("name")).trim();
   const email = String(form.get("email")).trim();
-  const topic = String(form.get("regarding"));
+  const regarding = String(form.get("regarding"));
+  const message = String(form.get("message")).trim();
 
   const sent = () => {
     letter.querySelector(".letter-note").textContent = `Thank you, ${name}. I’ll write back to ${email} soon.`;
@@ -126,32 +141,36 @@ letter?.addEventListener("submit", async (e) => {
 
   send.disabled = true;
   status.textContent = "Sending…";
-  try {
-    const res = await fetch(letter.action, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        access_key: form.get("access_key"),
-        subject: `${topic}: a letter from ${name}`,
+  const routes = [
+    () => post("/api/letter", { name, email, regarding, message }),
+    () =>
+      post("https://api.web3forms.com/submit", {
+        access_key: letter.dataset.key,
+        subject: `${regarding}: a letter from ${name}`,
         from_name: name,
         name,
         email,
         replyto: email,
-        regarding: topic,
-        message: String(form.get("message")).trim(),
+        regarding,
+        message,
       }),
-    });
-    const json = await res.json().catch(() => ({}));
-    if (!res.ok || !json.success) throw new Error(json.message || `HTTP ${res.status}`);
-    status.textContent = "";
-    sent();
-  } catch {
-    const address = document.querySelector(".email")?.getAttribute("href") || "";
-    status.replaceChildren(
-      "The letter couldn’t be sent just now. Your words are still here: try again, or ",
-      Object.assign(document.createElement("a"), { href: address, textContent: "write to me by email" }),
-      "."
-    );
-    send.disabled = false;
+  ];
+  for (const route of routes) {
+    try {
+      await route();
+      status.textContent = "";
+      return sent();
+    } catch {
+      // On to the next way.
+    }
   }
+
+  // Neither got through: the visitor's own mail app, with the letter in it.
+  const mail = `mailto:${letter.dataset.to}?subject=${encodeURIComponent(`${regarding}: a letter from ${name}`)}&body=${encodeURIComponent(`${message}\n\n${name}\n${email}`)}`;
+  status.replaceChildren(
+    "The letter couldn’t be sent from here just now. Your words are still here: ",
+    Object.assign(document.createElement("a"), { href: mail, textContent: "send it from your mail app" }),
+    ", or try again."
+  );
+  send.disabled = false;
 });
