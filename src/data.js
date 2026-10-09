@@ -134,23 +134,65 @@ export const projects = [
   },
 ];
 
-// Official details from each credential's public Open Badges record on Credly.
+// Official details from each credential's public Open Badges record on
+// Credly, in the order they were earned.
 export const certificates = [
-  {
-    title: "Claude Certified Architect",
-    issued: "19 September 2026",
-    href: "https://www.credly.com/badges/2bfa241d-e6f9-4330-8f23-37c70505c45a/public_url",
-  },
   {
     title: "Claude Certified Developer",
     issued: "12 September 2026",
     href: "https://www.credly.com/badges/2e1ecb88-4f11-4f3c-b7cf-a10251856c05/public_url",
   },
+  {
+    title: "Claude Certified Architect",
+    issued: "19 September 2026",
+    href: "https://www.credly.com/badges/2bfa241d-e6f9-4330-8f23-37c70505c45a/public_url",
+  },
 ];
 
-export const chronology = [
-  { year: "2025", text: "Joins Tata Consultancy Services, Bangalore, as Product Engineer" },
-  { year: "2024", text: "B.Tech, Computer Science & Engineering, CGPA 7.9" },
+// The Background scene. The paragraph is the opening of the statement from
+// the earlier catalogue site; the timeline and toolkit are from the résumé.
+export const about =
+  "I am a software engineer first. At Tata Consultancy Services I work on Java and Spring Boot services for a banking product, where the job is keeping legacy systems fast, correct and debuggable in production. Lately I’ve been bringing the same instincts to language models.";
+
+// Oldest first. `span` draws the line on to the next point in a heavier
+// stroke: a stretch of time somewhere, not a single moment.
+export const timeline = [
+  {
+    when: "Oct 2020",
+    datetime: "2020-10",
+    what: "Begins a B.Tech in Computer Science & Engineering",
+    where: "Madan Mohan Malaviya University of Technology, Gorakhpur",
+    span: true,
+  },
+  { when: "June 2024", datetime: "2024-06", what: "Graduates, with a CGPA of 7.9" },
+  {
+    when: "June 2025",
+    datetime: "2025-06",
+    what: "Joins Tata Consultancy Services as Product Engineer",
+    where: "Bangalore",
+    points: [
+      "Backend modules in Java and Spring Boot for a fintech and banking product, built into legacy systems.",
+      "SQL query tuning and indexing on critical processes.",
+      "Production debugging from logs and API traces, code review, and Jenkins build automation.",
+    ],
+    span: true,
+  },
+  {
+    when: "Sept 2026",
+    datetime: "2026-09",
+    what: "Certified by Anthropic, at Foundations level",
+    certificates: true,
+    span: true,
+  },
+  { when: "Now", what: "Open to software & AI engineering roles", now: true },
+];
+
+export const toolkit = [
+  ["AI & LLMs", "OpenAI GPT-5 family and Google Gemini; tool calling, agentic workflows, structured outputs, multi-model routing, guardrails and fallbacks, observability"],
+  ["Languages", "Java, TypeScript, JavaScript, SQL, C++"],
+  ["Frameworks", "Spring Boot, Spring Security, Node.js, Express, React, Next.js, Tailwind CSS, Socket.io"],
+  ["Data", "PostgreSQL, MongoDB, Redis, MySQL, Supabase"],
+  ["Tools", "Docker, Git, GitHub Actions, Jenkins, Postman, Vitest, Linux"],
 ];
 
 // The essays, for the footer (titles match content/essays/*.md).

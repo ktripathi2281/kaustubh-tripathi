@@ -4,7 +4,7 @@ import Intro, { REVEAL } from "./components/Intro.jsx";
 import Diagram from "./components/Diagrams.jsx";
 import { Horizon } from "./components/InkLine.jsx";
 import { NumeralSeal, Title, VerticalLabel } from "./components/marks.jsx";
-import { certificates, chronology, profile, projects } from "./data.js";
+import { about, certificates, profile, projects, timeline, toolkit } from "./data.js";
 import { ja, numerals, titles } from "./ja.js";
 
 const year = new Date().getFullYear();
@@ -139,9 +139,52 @@ function Work({ project: p, n }) {
   );
 }
 
+// One point on the timeline: a dot on the line, the line on to the next point
+// (heavier through a stretch of time), and what happened.
+function Moment({ moment: m, last }) {
+  return (
+    <li className={`tl-item${m.span ? " tl-item--span" : ""}${m.now ? " tl-item--now" : ""}`}>
+      <span className="tl-node" aria-hidden="true">
+        <svg viewBox="0 0 12 12" focusable="false">
+          <circle cx="6" cy="6" r="4.6" />
+        </svg>
+      </span>
+      {!last && <span className="tl-line" aria-hidden="true" />}
+      <p className="tl-when label">{m.datetime ? <time dateTime={m.datetime}>{m.when}</time> : m.when}</p>
+      <div className="tl-body">
+        <p className="tl-what">{m.what}</p>
+        {m.where && <p className="tl-where">{m.where}</p>}
+        {m.points && (
+          <ul className="tl-points">
+            {m.points.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+        )}
+        {m.certificates && (
+          <ul className="tl-certs">
+            {certificates.map((c) => (
+              <li key={c.href}>
+                <Ext href={c.href}>{c.title}</Ext>
+              </li>
+            ))}
+          </ul>
+        )}
+        {m.now && (
+          <ul className="links tl-links">
+            <li>
+              <a href="#contact">Write to me</a>
+            </li>
+          </ul>
+        )}
+      </div>
+    </li>
+  );
+}
+
 function Background() {
   return (
-    <section className="scene" id="about" tabIndex={-1} aria-labelledby="about-title">
+    <section className="scene scene--about" id="about" tabIndex={-1} aria-labelledby="about-title">
       <div className="above reveal">
         <div className="head">
           <VerticalLabel text={ja.background} />
@@ -149,24 +192,27 @@ function Background() {
             <h2 className="label" id="about-title">
               Background
             </h2>
-            <dl className="rows">
-              <div>
-                <dt className="label">{certificates[0].issued.slice(-4)}</dt>
-                <dd className="certs">
-                  {certificates.map((c) => (
-                    <Ext key={c.href} href={c.href}>
-                      {c.title}
-                    </Ext>
+            <p className="about-intro">{about}</p>
+            <div className="about-grid">
+              <ol className="timeline">
+                {timeline.map((m, i) => (
+                  <Moment key={m.when} moment={m} last={i === timeline.length - 1} />
+                ))}
+              </ol>
+              <section className="toolkit" aria-labelledby="toolkit-title">
+                <h3 className="label" id="toolkit-title">
+                  Toolkit
+                </h3>
+                <dl>
+                  {toolkit.map(([kind, tools]) => (
+                    <div key={kind}>
+                      <dt className="label">{kind}</dt>
+                      <dd>{tools}</dd>
+                    </div>
                   ))}
-                </dd>
-              </div>
-              {chronology.map((c) => (
-                <div key={c.year}>
-                  <dt className="label">{c.year}</dt>
-                  <dd>{c.text}</dd>
-                </div>
-              ))}
-            </dl>
+                </dl>
+              </section>
+            </div>
           </div>
         </div>
       </div>

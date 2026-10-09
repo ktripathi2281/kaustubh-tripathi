@@ -553,37 +553,232 @@ a:hover {
   background: var(--ink);
 }
 
-/* Background: three rows. */
-.rows {
-  display: grid;
-  gap: 14px;
-  margin-top: clamp(14px, 2.4vh, 24px);
+/* Background: a paragraph, then the timeline beside the toolkit. */
+.about-intro {
+  max-width: 38em;
+  margin-top: clamp(14px, 2.4vh, 22px);
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.6;
 }
 
-.rows > div {
+.about-grid {
   display: grid;
-  grid-template-columns: 3em minmax(0, 1fr);
-  column-gap: 12px;
-  align-items: baseline;
+  gap: 48px;
+  margin-top: clamp(36px, 6vh, 64px);
 }
 
-.rows dd {
-  max-width: 32ch;
-  font-size: clamp(17px, 1.35vw, 19px);
+@media (min-width: 900px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    column-gap: clamp(40px, 6vw, 104px);
+    align-items: start;
+  }
+}
+
+/* The timeline: one straight line in ink, a dot for each point on it. The
+   line runs heavier through a stretch of time (university, TCS) and fine
+   between them. */
+.tl-item {
+  --node: 11px;
+  --node-top: 5px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 6.2em minmax(0, 1fr);
+  column-gap: 16px;
+  padding: 0 0 30px 32px;
+}
+
+.tl-item:last-child {
+  padding-bottom: 0;
+}
+
+.tl-node {
+  position: absolute;
+  top: var(--node-top);
+  left: 0;
+  width: var(--node);
+  height: var(--node);
+}
+
+.tl-node svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tl-node circle {
+  fill: var(--ink);
+}
+
+/* Now: an open ring, the line not yet closed. */
+.tl-item--now .tl-node circle {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.3;
+}
+
+.tl-line {
+  position: absolute;
+  top: calc(var(--node-top) + var(--node) + 4px);
+  bottom: calc(4px - var(--node-top));
+  left: calc(var(--node) / 2 - 0.65px);
+  width: 1.3px;
+  background: var(--ink);
+  transform-origin: top;
+}
+
+.tl-item--span .tl-line {
+  left: calc(var(--node) / 2 - 1.5px);
+  width: 3px;
+}
+
+.tl-when {
+  padding-top: 1px;
+}
+
+.tl-what {
+  font-size: clamp(17px, 1.3vw, 19px);
+  line-height: 1.4;
+}
+
+.tl-where {
+  margin-top: 2px;
+  font-size: 15px;
   line-height: 1.45;
+  color: var(--ink-soft);
 }
 
-/* Each certificate is its own 44px target; the negative margin keeps the
-   rows set as tightly as plain text. */
-.certs {
+.tl-points {
+  display: grid;
+  gap: 5px;
+  max-width: 44ch;
+  margin-top: 10px;
+}
+
+.tl-points li {
+  position: relative;
+  padding-left: 1.3em;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.tl-points li::before {
+  content: "";
+  position: absolute;
+  top: 0.78em;
+  left: 0;
+  width: 0.7em;
+  height: 1px;
+  background: var(--ink);
+}
+
+/* Each certificate is its own 44px target, set as tightly as plain text. */
+.tl-certs {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 4px;
+  margin-top: 4px;
 }
 
-.certs a {
-  padding: 9px 0;
-  margin: -9px 0;
+.tl-certs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 17px;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--hair-strong);
+  text-underline-offset: 0.28em;
+}
+
+.tl-certs a:hover {
+  text-decoration-color: var(--ink);
+}
+
+.tl-links {
+  margin-top: 2px;
+}
+
+/* On a phone the date sits above what happened. */
+@media (max-width: 599px) {
+  .tl-item {
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: 28px;
+  }
+
+  .tl-when {
+    margin-bottom: 2px;
+  }
+}
+
+/* The toolkit: what the work is made with, as a ledger. */
+.toolkit dl {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.toolkit dl > div {
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr);
+  column-gap: 14px;
+  align-items: baseline;
+  padding-top: 14px;
+  border-top: 1px solid var(--hair);
+}
+
+.toolkit dd {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* On a phone each kind sits above its list. */
+@media (max-width: 599px) {
+  .toolkit dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 4px;
+  }
+}
+
+/* The line draws itself down the page as you scroll; each point arrives
+   when it comes into view (src/page.js): its dot stamped, its words faded in. */
+@keyframes tl-draw {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .motion .tl-node {
+    transition:
+      opacity 250ms ease,
+      scale 250ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+
+  .motion .tl-when,
+  .motion .tl-body {
+    transition: opacity 500ms ease 120ms;
+  }
+
+  .motion .tl-item:not(.is-here) .tl-node {
+    opacity: 0;
+    scale: 1.6;
+  }
+
+  .motion .tl-item:not(.is-here) .tl-when,
+  .motion .tl-item:not(.is-here) .tl-body {
+    opacity: 0;
+  }
+
+  @supports (animation-timeline: view()) {
+    .motion .tl-line {
+      animation: tl-draw linear both;
+      animation-timeline: view();
+      /* Complete once the whole stretch is on screen, so no gap is left
+         in the part of the line you can see. */
+      animation-range: entry 0% entry 100%;
+    }
+  }
 }
 
 /* ------------------------------------------------------------------ */

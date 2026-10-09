@@ -76,7 +76,8 @@ if (motion) {
     },
     { threshold: [0, 0.15, 0.25, 0.35, 0.5, 0.75, 1] }
   );
-  document.querySelectorAll(".scene").forEach((s) => arrivals.observe(s));
+  // The points on the Background timeline arrive the same way, one by one.
+  document.querySelectorAll(".scene, .tl-item").forEach((s) => arrivals.observe(s));
 }
 
 // Where CSS has no scroll timelines, draw the lines from here: each horizon
