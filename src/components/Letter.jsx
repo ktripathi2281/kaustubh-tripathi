@@ -3,11 +3,11 @@ import { ja } from "../ja.js";
 
 const TOPICS = ["A role", "A collaboration", "A conversation"];
 
-// A letter to Kaustubh, written on the page and delivered by Web3Forms to the
-// inbox behind the public key in data.js. It goes by way of the site's own
-// relay, api/letter.js, since some networks can't reach Web3Forms directly.
-// With JavaScript, src/page.js sends it in place (and has fallbacks); without,
-// the form posts to the relay, which returns the visitor to /#sent or /#unsent.
+// A letter to Kaustubh, written on the page and emailed to him by the site's
+// own relay, api/letter.js, through Resend. With JavaScript, src/page.js sends
+// it in place, falling back to Web3Forms (the public key in data.js) and then
+// to the visitor's mail app; without, the form posts to the relay, which
+// returns the visitor to /#sent or /#unsent.
 export default function Letter() {
   return (
     <>

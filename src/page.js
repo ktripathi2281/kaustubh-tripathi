@@ -117,9 +117,10 @@ if (byScroll) {
 }
 
 // The letter in the footer (components/Letter.jsx), sent in place. It goes
-// first by the site's own relay (api/letter.js), then straight to Web3Forms;
-// each try gives up after 12 seconds. If neither gets through, the letter is
-// offered to the visitor's own mail app, already written.
+// first by the site's own relay (api/letter.js, which emails it through
+// Resend), then straight to Web3Forms; each try gives up after 12 seconds. If
+// neither gets through, the letter is offered to the visitor's own mail app,
+// already written.
 const letter = document.querySelector("form[data-letter]");
 
 async function post(url, body) {

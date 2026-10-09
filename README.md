@@ -35,10 +35,10 @@ motion and sends the letter.
   essay's opening, set very light. Each redraws the central picture of an image made for that project, in
   the same ink, without its words or numbers.
 - **The letter:** [`src/components/Letter.jsx`](src/components/Letter.jsx), a message written on the page
-  and delivered by Web3Forms (the public key is in `data.js`) by way of the site's own relay,
-  [`api/letter.js`](api/letter.js), since some networks can't reach Web3Forms directly. With JavaScript it
-  sends in place, then tries Web3Forms directly, then offers the visitor's mail app; without, it posts to
-  the relay as an ordinary form.
+  and emailed by the site's own relay, [`api/letter.js`](api/letter.js), through Resend. With JavaScript
+  it sends in place; if the relay fails, it tries Web3Forms from the browser (the public key is in
+  `data.js`), then offers the visitor's mail app. Without JavaScript it posts to the relay as an ordinary
+  form.
 - **Styles:** [`src/styles.css`](src/styles.css). The colour tokens are at the top.
 - **Type:** Shippori Mincho (names, titles, text and all Japanese) and Zen Kaku Gothic New (small labels),
   both self-hosted in [`src/fonts/`](src/fonts/). The Japanese font holds only the characters in
@@ -57,7 +57,9 @@ npm run fonts    # rebuild the font subsets after changing src/ja.js
 npm run cards    # recapture public/og/*.png (needs the dev server and Chrome or Edge)
 ```
 
-Deploys to Vercel as a standard Vite project.
+Deploys to Vercel as a standard Vite project. For the letter, set `RESEND_API_KEY` in the project's
+environment variables to a [Resend](https://resend.com) API key from the account whose inbox should receive
+the letters.
 
 ## Credits
 
