@@ -1,13 +1,16 @@
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
+import Plate from "./Plates.jsx";
 import { projects } from "../data.js";
 
 // `essay` comes from content/essays/<slug>.md, turned into HTML at build
-// time by vite/markdown.js.
+// time by vite/markdown.js. Behind its opening, very light, is the drawing
+// for its project (components/Plates.jsx).
 export default function EssayPage({ essay, slug }) {
   const { meta, html, words } = essay;
   const minutes = Math.max(1, Math.round(words / 230));
-  const project = projects.find((p) => p.id === (meta.plate || slug));
+  const id = meta.plate || slug;
+  const project = projects.find((p) => p.id === id);
 
   return (
     <>
@@ -17,6 +20,7 @@ export default function EssayPage({ essay, slug }) {
       <Header home={false} />
 
       <main className="essay" id="essay">
+        <Plate id={id} />
         <article aria-labelledby="essay-title">
           <header className="essay-head">
             <p className="label">
@@ -27,7 +31,7 @@ export default function EssayPage({ essay, slug }) {
             <p className="label">
               {meta.with && <>With {meta.with} · </>}
               {minutes} min read
-              {/^draft/i.test(meta.status || "") && <> · Draft</>}
+              {meta.status && <> · {meta.status}</>}
             </p>
           </header>
 

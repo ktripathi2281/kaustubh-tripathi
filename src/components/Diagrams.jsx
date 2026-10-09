@@ -1,3 +1,4 @@
+import { arrow, circle, polar, r1 } from "../lib/draw.js";
 import { rng } from "../lib/random.js";
 
 // A small ink diagram for each project: how it works, drawn in the same line
@@ -10,18 +11,6 @@ const W = 360;
 const H = 220;
 const START = 250; // ms after the scene arrives
 const STEP = 110; // ms between steps
-
-const r1 = (n) => Math.round(n * 10) / 10;
-
-// A circle as a path, drawn clockwise from the top, so it can be inked.
-const circle = (cx, cy, r) =>
-  `M${r1(cx)} ${r1(cy - r)}A${r} ${r} 0 1 1 ${r1(cx)} ${r1(cy + r)}A${r} ${r} 0 1 1 ${r1(cx)} ${r1(cy - r)}`;
-
-// An arrowhead with its tip at (x, y), pointing along `a` radians.
-const arrow = (x, y, a, s = 6) =>
-  `M${r1(x - s * Math.cos(a - 0.45))} ${r1(y - s * Math.sin(a - 0.45))}L${r1(x)} ${r1(y)}L${r1(x - s * Math.cos(a + 0.45))} ${r1(y - s * Math.sin(a + 0.45))}`;
-
-const polar = ([cx, cy], r, deg) => [cx + r * Math.cos((deg * Math.PI) / 180), cy + r * Math.sin((deg * Math.PI) / 180)];
 
 // Two curves between a and b, bowed apart: a lens. One curve: an arc.
 function bow(a, b, k) {
@@ -227,11 +216,12 @@ function rideradar() {
   };
 }
 
-// Skill Barter: people around you at growing distances; a mutual match is a
-// lens between you, one-way interest a single arc; the nearest match is bold.
+// Skill Barter: you, your city around you, and people in it and beyond; a
+// mutual match is a lens between you, one-way interest a single arc. Mutual
+// matches come first and, among them, your own city: that one is bold.
 function skillbarter() {
   const you = [118, 112];
-  const items = [36, 70, 104].map((rr, i) => ({ kind: "grid", d: circle(you[0], you[1], rr), step: i * 0.5, t: 800 }));
+  const items = [{ kind: "grid", d: circle(you[0], you[1], 80), step: 0.5, t: 900 }];
   const people = [
     [44, 150, "mutual", true],
     [62, -48, "one-way"],
@@ -254,10 +244,10 @@ function skillbarter() {
     label(you[0], you[1] - 14, "you", 1.6, "middle"),
     label(170, 52, "one-way", 3),
     label(150, 198, "mutual", 3.6),
-    label(244, 208, "ranked by distance", 5)
+    label(18, 212, "your city first", 5)
   );
   return {
-    label: "Diagram: people around you at growing distances; mutual matches are joined by a lens, one-way interest by a single arc, and the nearest match is drawn bold.",
+    label: "Diagram: you, with your city drawn around you and people inside it and beyond; mutual matches are joined by a lens, one-way interest by a single arc, and a mutual match in your own city is drawn bold.",
     items,
   };
 }

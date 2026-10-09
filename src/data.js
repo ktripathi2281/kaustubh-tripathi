@@ -54,7 +54,10 @@ export const projects = [
       "Every cited claim is checked against the evidence it cites before the answer is shown.",
       "Says when evidence is missing or conflicting, instead of inventing an answer.",
     ],
-    links: [{ label: "Source", href: "https://github.com/ktripathi2281/DeepResearch" }],
+    links: [
+      { label: "Source", href: "https://github.com/ktripathi2281/DeepResearch" },
+      { label: "Essay", href: "/essays/deepresearch/", internal: true },
+    ],
   },
   {
     id: "loopdetector",
@@ -67,7 +70,10 @@ export const projects = [
       "Seven deterministic signals score the work since the last real progress: same history, same verdict.",
       "Never stops Claude on its own: Inspect, Rethink, Pause and Continue are buttons you press.",
     ],
-    links: [{ label: "Source", href: "https://github.com/ktripathi2281/LoopDetector" }],
+    links: [
+      { label: "Source", href: "https://github.com/ktripathi2281/LoopDetector" },
+      { label: "Essay", href: "/essays/loopdetector/", internal: true },
+    ],
   },
   {
     id: "leetcode",
@@ -98,7 +104,10 @@ export const projects = [
       "Built so far: chat completions streamed over SSE, with first-token, idle and total timeouts.",
       "Next: real providers, with retries, fallback and circuit breakers.",
     ],
-    links: [{ label: "Source", href: "https://github.com/ktripathi2281/Tollgate" }],
+    links: [
+      { label: "Source", href: "https://github.com/ktripathi2281/Tollgate" },
+      { label: "Essay", href: "/essays/tollgate/", internal: true },
+    ],
   },
   {
     id: "rideradar",
@@ -107,29 +116,31 @@ export const projects = [
     summary: "A live map for groups riding together, with battery, SOS and lost-signal handling.",
     stack: "Socket.io, React Leaflet, OpenStreetMap · Express, MongoDB",
     points: [
-      "A rider who loses signal fades to their last known position instead of vanishing.",
+      "A rider who loses signal stays on the map at their last known position, marked offline.",
       "JWT is checked at the socket handshake, and every event stays inside its trip's room.",
       "Trails are capped at 1,000 points per rider, so history stays a constant size.",
     ],
     links: [
       { label: "Visit", href: "https://ride-radar-sand.vercel.app/" },
       { label: "Source", href: "https://github.com/ktripathi2281/RideRadar" },
+      { label: "Essay", href: "/essays/rideradar/", internal: true },
     ],
   },
   {
     id: "skillbarter",
     name: "Skill Barter",
     type: "Peer-to-peer skill exchange",
-    summary: "Trade skills without money. Matches are ranked by distance, and both sides must agree.",
-    stack: "MongoDB 2dsphere, Socket.io, JWT · React, Express",
+    summary: "Trade skills without money. Matches are found both ways, your own city first, and both sides must agree.",
+    stack: "MongoDB, Socket.io, JWT · React, Express",
     points: [
-      "Finds mutual matches and one-way interest, ranked by distance.",
+      "Finds mutual matches and one-way interest, with people in your own city first.",
       "Real-time chat, and a trade lifecycle that needs consent from both sides.",
       "Dual-token JWT with silent renewal, OTP email verification, rate limiting and CORS whitelisting.",
     ],
     links: [
       { label: "Visit", href: "https://skill-barter-psi.vercel.app/" },
       { label: "Source", href: "https://github.com/ktripathi2281/Skill-Barter" },
+      { label: "Essay", href: "/essays/skillbarter/", internal: true },
     ],
   },
 ];
@@ -199,4 +210,9 @@ export const toolkit = [
 export const essays = [
   { slug: "kavach", title: "Confidently wrong" },
   { slug: "leetcode", title: "Show your work" },
+  { slug: "deepresearch", title: "Pointing is not proving" },
+  { slug: "loopdetector", title: "The same failure, again" },
+  { slug: "tollgate", title: "The commit point" },
+  { slug: "rideradar", title: "Where is everyone?" },
+  { slug: "skillbarter", title: "A double coincidence of wants" },
 ];

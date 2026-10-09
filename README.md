@@ -16,10 +16,11 @@ the name is written in katakana stroke by stroke, the seal is pressed red, and t
 pure CSS animation, skipped by any touch, key or scroll, and never shown when motion is turned off.
 
 React 19 + Vite, plain CSS, no UI or animation libraries. Every page is rendered to static HTML at build
-time, so it reads in full without JavaScript; the main page then hydrates.
+time, so it reads in full without JavaScript; one small script, [`src/page.js`](src/page.js), adds the
+motion and sends the letter.
 
-- **Content:** [`src/data.js`](src/data.js) holds all text, links and metadata. Essays are Markdown in
-  [`content/essays/`](content/essays/).
+- **Content:** [`src/data.js`](src/data.js) holds all text, links and metadata. Essays, one for each
+  project, are Markdown in [`content/essays/`](content/essays/), written from each project's code and docs.
 - **Japanese:** [`src/ja.js`](src/ja.js) holds every Japanese string, with its reading.
 - **The ink line:** [`src/lib/ridge.js`](src/lib/ridge.js). It is seeded, so every visit draws the same
   line. [`InkLine.jsx`](src/components/InkLine.jsx) re-plots it in pixels once the page runs, so the stroke can
@@ -27,9 +28,14 @@ time, so it reads in full without JavaScript; the main page then hydrates.
 - **The ridges:** [`src/lib/stipple.js`](src/lib/stipple.js), an ordered dither on a canvas.
 - **The diagrams:** [`src/components/Diagrams.jsx`](src/components/Diagrams.jsx), one ink drawing per project of
   how it works, built from its README or the résumé. Each draws itself as its scene arrives.
+- **The plates:** [`src/components/Plates.jsx`](src/components/Plates.jsx), a large drawing behind each
+  essay's opening, set very light. Each redraws the central picture of an image made for that project, in
+  the same ink, without its words or numbers.
 - **The letter:** [`src/components/Letter.jsx`](src/components/Letter.jsx), a message written on the page
-  and delivered by Web3Forms (the public key is in `data.js`). With JavaScript it sends in place; without,
-  it posts as an ordinary form.
+  and delivered by Web3Forms (the public key is in `data.js`) by way of the site's own relay,
+  [`api/letter.js`](api/letter.js), since some networks can't reach Web3Forms directly. With JavaScript it
+  sends in place, then tries Web3Forms directly, then offers the visitor's mail app; without, it posts to
+  the relay as an ordinary form.
 - **Styles:** [`src/styles.css`](src/styles.css). The colour tokens are at the top.
 - **Type:** Shippori Mincho (names, titles, text and all Japanese) and Zen Kaku Gothic New (small labels),
   both self-hosted in [`src/fonts/`](src/fonts/). The Japanese font holds only the characters in

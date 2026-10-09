@@ -13,7 +13,12 @@ export default defineConfig({
       input: {
         main: "index.html",
         kavach: "essays/kavach/index.html",
+        deepresearch: "essays/deepresearch/index.html",
+        loopdetector: "essays/loopdetector/index.html",
         leetcode: "essays/leetcode/index.html",
+        tollgate: "essays/tollgate/index.html",
+        rideradar: "essays/rideradar/index.html",
+        skillbarter: "essays/skillbarter/index.html",
         notfound: "404.html",
       },
     },
