@@ -171,13 +171,6 @@ function Background() {
         </div>
       </div>
       <Horizon seed={977} />
-      <div className="below reveal">
-        <ul className="links">
-          <li>
-            <Ext href={profile.resume}>Résumé</Ext>
-          </li>
-        </ul>
-      </div>
     </section>
   );
 }
