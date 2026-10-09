@@ -6,6 +6,8 @@ import { NumeralSeal, Title, VerticalLabel } from "./components/marks.jsx";
 import { certificates, chronology, profile, projects } from "./data.js";
 import { ja, numerals, titles } from "./ja.js";
 
+const year = new Date().getFullYear();
+
 function Ext({ href, children }) {
   return (
     <a href={href} target="_blank" rel="noreferrer">
@@ -27,7 +29,9 @@ function Opening() {
         <div className="head">
           <VerticalLabel text={ja.works} />
           <div className="text">
-            <p className="label">Selected works</p>
+            <p className="label">
+              Selected works · {profile.since}–{year}
+            </p>
             <Title as="h1" ja={titles.name} className="name" id="name">
               {profile.name}
             </Title>
@@ -39,12 +43,52 @@ function Opening() {
         </div>
       </div>
       <Horizon seed={101} />
-      <div className="below reveal">
+      <div className="below reveal opening-below">
+        <ul className="links">
+          <li>
+            <Ext href={profile.resume}>Résumé</Ext>
+          </li>
+          <li>
+            <a href={`mailto:${profile.email}`}>Email</a>
+          </li>
+        </ul>
         <p className="label hint">
           Scroll <span aria-hidden="true">↓</span>
         </p>
       </div>
     </section>
+  );
+}
+
+// The stack and three points, closed until asked for. A native disclosure, so
+// it opens without JavaScript and screen readers announce it as expandable.
+function Details({ project: p }) {
+  return (
+    <details className="more">
+      <summary className="label">
+        <span className="more-label">Details</span>
+        <span className="visually-hidden">: {p.name}</span>
+      </summary>
+      <div className="more-body">
+        <dl className="more-facts">
+          <div>
+            <dt className="label">Built with</dt>
+            <dd>{p.stack}</dd>
+          </div>
+          {p.context && (
+            <div>
+              <dt className="label">Context</dt>
+              <dd>{p.context}</dd>
+            </div>
+          )}
+        </dl>
+        <ul className="more-points">
+          {p.points.map((point) => (
+            <li key={point}>{point}</li>
+          ))}
+        </ul>
+      </div>
+    </details>
   );
 }
 
@@ -65,6 +109,7 @@ function Work({ project: p, n }) {
             In progress
           </p>
         )}
+        <Details project={p} />
       </div>
       <Horizon seed={211 + n * 37}>
         <NumeralSeal numeral={numerals[n]} />

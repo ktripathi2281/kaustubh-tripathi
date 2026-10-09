@@ -11,6 +11,7 @@ export const ja = {
   contact: "連絡先", // renrakusaki, "Contact"
   reading: "読み物", // yomimono, "Reading"
   seal: "カウストゥブ", // Kausutubu, the name seal
+  send: "送", // okuru, "send": the seal on the letter's send button, beside "Seal and send"
 };
 
 // The big titles, in katakana: how Japanese writes names, by their sound.

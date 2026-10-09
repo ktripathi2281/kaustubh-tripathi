@@ -57,6 +57,7 @@
   --ink-soft: #686764;
   --seal: #d3381c;
   --hair: rgba(26, 26, 24, 0.22);
+  --hair-strong: rgba(26, 26, 24, 0.4);
 
   --mincho: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif;
   --gothic: "Zen Kaku Gothic New", "Yu Gothic", "Hiragino Sans", system-ui, sans-serif;
@@ -289,6 +290,22 @@ a:hover {
   padding-bottom: 30svh;
 }
 
+/* On a phone the scenes sit closer: there is less paper to cross, and the
+   text is never more than a short scroll away. */
+@media (max-width: 767px) {
+  .scene {
+    min-height: 0;
+    padding: 7svh 0 13svh;
+  }
+
+  .scene--opening {
+    min-height: 92vh;
+    min-height: 92svh;
+    padding-top: calc(var(--header-h) + 9svh);
+    padding-bottom: 16svh;
+  }
+}
+
 .above,
 .below {
   margin-left: var(--inset);
@@ -381,11 +398,21 @@ a:hover {
   letter-spacing: 0.04em;
 }
 
+/* A faint hairline under each link, so they read as links on a phone too;
+   it darkens on hover. */
 .links a {
   display: inline-flex;
   align-items: center;
   min-width: 44px;
   min-height: 44px;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--hair-strong);
+  text-underline-offset: 0.3em;
+}
+
+.links a:hover {
+  text-decoration-color: var(--ink);
 }
 
 .hint {
@@ -393,6 +420,111 @@ a:hover {
   align-items: center;
   gap: 0.4em;
   min-height: 44px;
+}
+
+/* The opening: the résumé and email at hand, then the hint to scroll. */
+.opening-below {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: clamp(18px, 2vw, 28px);
+}
+
+/* Details: the stack and three points, opened on request. */
+.more {
+  margin-top: 10px;
+  max-width: 40rem;
+}
+
+.more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--ink);
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+/* The underline is on the word alone, not on the plus beside it. */
+.more-label {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--hair-strong);
+  text-underline-offset: 0.3em;
+}
+
+.more summary:hover .more-label {
+  text-decoration-color: var(--ink);
+}
+
+/* A plus that turns to a cross when open. */
+.more summary::after {
+  content: "+";
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 250ms ease;
+}
+
+.more[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.more-body {
+  padding: 2px 0 8px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .more[open] .more-body {
+    animation: appear 400ms ease both;
+  }
+}
+
+.more-facts > div {
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: baseline;
+  margin-top: 6px;
+}
+
+@media (max-width: 767px) {
+  .more-facts > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.more-facts dd,
+.more-points li {
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.5;
+}
+
+.more-points {
+  display: grid;
+  gap: 8px;
+  max-width: 46ch;
+  margin-top: 14px;
+}
+
+.more-points li {
+  position: relative;
+  padding-left: 1.3em;
+}
+
+.more-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.78em;
+  width: 0.7em;
+  height: 1px;
+  background: var(--ink);
 }
 
 /* Background: three rows. */
@@ -1049,6 +1181,236 @@ a:hover {
 
 @media (max-width: 767px) {
   .footer-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The letter: ruled paper, a signature and a seal to send it. No boxes:
+   the fields are hairlines on the page. */
+.letter {
+  max-width: 34rem;
+  margin-top: clamp(40px, 7vh, 64px);
+}
+
+.letter-dear {
+  margin: 8px 0 12px;
+  font-size: clamp(24px, 2.4vw, 30px);
+  line-height: 1.2;
+}
+
+.letter-topics {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.letter-topics legend {
+  padding: 0;
+}
+
+.letter-topics > div {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 20px;
+}
+
+.letter-topic {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-family: var(--gothic);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.letter-topic input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.letter-topic:has(input:checked) {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+}
+
+.letter-topic:has(input:focus-visible) {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.letter textarea {
+  display: block;
+  width: 100%;
+  min-height: 12em;
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  resize: vertical;
+  font: 18px/2 var(--mincho);
+  color: var(--ink);
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(2em - 1px), var(--hair) calc(2em - 1px), var(--hair) 2em);
+  background-attachment: local;
+}
+
+.letter textarea:focus {
+  outline: none;
+}
+
+.letter textarea:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 6px;
+}
+
+.letter ::placeholder {
+  color: var(--ink-soft);
+  opacity: 1;
+}
+
+.letter-closing {
+  margin-top: 18px;
+  font-size: 18px;
+}
+
+.letter-from {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 24px;
+  margin-top: 6px;
+}
+
+.letter-field .label {
+  display: block;
+  margin-top: 6px;
+}
+
+.letter-field input {
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 1px solid var(--hair-strong);
+  border-radius: 0;
+  background: transparent;
+  font: 18px/1.4 var(--mincho);
+  color: var(--ink);
+}
+
+.letter-field input:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.letter-send {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--gothic);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.letter-send:hover .letter-send-label {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+}
+
+.letter-send:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+/* The send seal: a seal, so it carries the one red. Its glyph is set at
+   24px, large text, where paper on the seal red clears WCAG AA. */
+.send-seal {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  background: var(--seal);
+  color: var(--paper);
+  font-family: var(--mincho);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.letter-status {
+  min-height: 1.5em;
+  margin-top: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.letter-status a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.24em;
+}
+
+.letter-trap {
+  position: absolute;
+  left: -9999px;
+}
+
+/* Sent: the letter folds away and the seal is stamped beside the reply. */
+.letter-done,
+.letter-sent {
+  display: none;
+}
+
+.letter.is-sent > :not(.letter-done) {
+  display: none;
+}
+
+.letter.is-sent .letter-done {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  outline: none;
+}
+
+.letter-note {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .letter.is-sent .letter-done {
+    animation: appear 500ms ease both;
+  }
+
+  .letter.is-sent .letter-done .send-seal {
+    animation: intro-press 260ms cubic-bezier(0.3, 1.5, 0.5, 1) 300ms both;
+  }
+}
+
+/* Without JavaScript the form posts away and comes back to /#sent. */
+.letter-sent:target {
+  display: block;
+  margin-top: 24px;
+  font-size: 18px;
+}
+
+@media (max-width: 767px) {
+  .letter-from {
     grid-template-columns: minmax(0, 1fr);
   }
 }

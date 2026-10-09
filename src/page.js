@@ -61,20 +61,20 @@ for (const canvas of document.querySelectorAll(".ridges canvas")) {
   }).observe(canvas);
 }
 
-// A scene arrives when 60% of it is in view, or when it fills 60% of the
-// screen (a tall scene on a short phone): its text fades in, its seal is
+// A scene arrives when a third of it is in view, or when it fills a third of
+// the screen (a tall scene on a short phone): its text fades in, its seal is
 // stamped and, on a phone, its title shows in katakana for a moment.
 if (motion) {
   const arrivals = new IntersectionObserver(
     (entries) => {
       for (const en of entries) {
-        const fills = en.intersectionRect.height >= 0.6 * (en.rootBounds?.height || innerHeight);
-        if (en.intersectionRatio < 0.6 && !fills) continue;
+        const fills = en.intersectionRect.height >= 0.35 * (en.rootBounds?.height || innerHeight);
+        if (en.intersectionRatio < 0.35 && !fills) continue;
         en.target.classList.add("is-here");
         arrivals.unobserve(en.target);
       }
     },
-    { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] }
+    { threshold: [0, 0.15, 0.25, 0.35, 0.5, 0.75, 1] }
   );
   document.querySelectorAll(".scene").forEach((s) => arrivals.observe(s));
 }
@@ -103,3 +103,54 @@ if (byScroll) {
   addEventListener("scroll", onScroll, { passive: true });
   addEventListener("resize", onScroll);
 }
+
+// The letter in the footer (components/Letter.jsx), sent in place through
+// Web3Forms. If it can't be sent, the words stay where they were written.
+const letter = document.querySelector("form[data-letter]");
+letter?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = new FormData(letter);
+  const status = letter.querySelector(".letter-status");
+  const send = letter.querySelector(".letter-send");
+  const name = String(form.get("name")).trim();
+  const email = String(form.get("email")).trim();
+  const topic = String(form.get("regarding"));
+
+  const sent = () => {
+    letter.querySelector(".letter-note").textContent = `Thank you, ${name}. I’ll write back to ${email} soon.`;
+    letter.classList.add("is-sent");
+    letter.querySelector(".letter-done").focus({ preventScroll: true });
+  };
+  if (form.get("botcheck")) return sent();
+
+  send.disabled = true;
+  status.textContent = "Sending…";
+  try {
+    const res = await fetch(letter.action, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        access_key: form.get("access_key"),
+        subject: `${topic}: a letter from ${name}`,
+        from_name: name,
+        name,
+        email,
+        replyto: email,
+        regarding: topic,
+        message: String(form.get("message")).trim(),
+      }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.success) throw new Error(json.message || `HTTP ${res.status}`);
+    status.textContent = "";
+    sent();
+  } catch {
+    const address = document.querySelector(".email")?.getAttribute("href") || "";
+    status.replaceChildren(
+      "The letter couldn’t be sent just now. Your words are still here: try again, or ",
+      Object.assign(document.createElement("a"), { href: address, textContent: "write to me by email" }),
+      "."
+    );
+    send.disabled = false;
+  }
+});

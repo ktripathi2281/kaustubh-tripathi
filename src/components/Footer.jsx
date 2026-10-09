@@ -1,4 +1,5 @@
 import { Horizon } from "./InkLine.jsx";
+import Letter from "./Letter.jsx";
 import { NameSeal, VerticalLabel } from "./marks.jsx";
 import { essays, profile, projects } from "../data.js";
 import { ja } from "../ja.js";
@@ -47,6 +48,7 @@ export default function Footer({ home = true }) {
                 <Ext href={profile.resume}>Résumé</Ext>
               </li>
             </ul>
+            <Letter />
           </div>
         </section>
 
