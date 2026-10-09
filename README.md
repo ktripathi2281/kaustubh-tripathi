@@ -25,6 +25,8 @@ time, so it reads in full without JavaScript; the main page then hydrates.
   line. [`InkLine.jsx`](src/components/InkLine.jsx) re-plots it in pixels once the page runs, so the stroke can
   be drawn as a fraction of its length.
 - **The ridges:** [`src/lib/stipple.js`](src/lib/stipple.js), an ordered dither on a canvas.
+- **The diagrams:** [`src/components/Diagrams.jsx`](src/components/Diagrams.jsx), one ink drawing per project of
+  how it works, built from its README or the résumé. Each draws itself as its scene arrives.
 - **The letter:** [`src/components/Letter.jsx`](src/components/Letter.jsx), a message written on the page
   and delivered by Web3Forms (the public key is in `data.js`). With JavaScript it sends in place; without,
   it posts as an ordinary form.

@@ -1,6 +1,7 @@
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
 import Intro, { REVEAL } from "./components/Intro.jsx";
+import Diagram from "./components/Diagrams.jsx";
 import { Horizon } from "./components/InkLine.jsx";
 import { NumeralSeal, Title, VerticalLabel } from "./components/marks.jsx";
 import { certificates, chronology, profile, projects } from "./data.js";
@@ -94,7 +95,7 @@ function Details({ project: p }) {
 
 function Work({ project: p, n }) {
   return (
-    <section className="scene" id={p.id} tabIndex={-1} aria-labelledby={`${p.id}-name`}>
+    <section className="scene scene--work" id={p.id} tabIndex={-1} aria-labelledby={`${p.id}-name`}>
       <div className="above reveal">
         <p className="label">{p.type}</p>
         <Title as="h2" ja={titles[p.id]} className="title" id={`${p.id}-name`}>
@@ -111,6 +112,7 @@ function Work({ project: p, n }) {
         )}
         <Details project={p} />
       </div>
+      <Diagram id={p.id} />
       <Horizon seed={211 + n * 37}>
         <NumeralSeal numeral={numerals[n]} />
       </Horizon>
